@@ -124,4 +124,4 @@ This project is licensed under the MIT License
 
 The diagram illustrates the business logic of the application.
 
-![Business Logic Diagram](./assets/project_schema2.svg)
+![Business Logic Diagram](./assets/project_schema.png)
