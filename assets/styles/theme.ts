@@ -1,6 +1,8 @@
 // theme.ts
 export const theme = {
   colors: {
+    yellowbg:'#282424',
+    darkbg:'#282424',
     primary: '#007bff',
     secondary: '#6c757d',
     success: '#28a745',
