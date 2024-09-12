@@ -8,11 +8,16 @@ interface HeaderProps {
   part?: number; // Corrected type for part
 }
 
-const Header: React.FC<HeaderProps> = ({ content, part}) => { // Default value for part
+const Header: React.FC<HeaderProps> = ({ content, part }) => {
+  // Default value for part
   // Conditional styles and components
-  const upperPartStyle = content ? styles.upperPartWithContent : styles.upperPartNoContent;
+  const upperPartStyle = content
+    ? styles.upperPartWithContent
+    : styles.upperPartNoContent;
   const imageStyle = content ? styles.imageWithContent : styles.imageNoContent;
-  const textComponent = content ? <Text style={styles.content}>{content}</Text> : null;
+  const textComponent = content ? (
+    <Text style={styles.content}>{content}</Text>
+  ) : null;
 
   return (
     <Container style={styles.container}>
@@ -20,15 +25,14 @@ const Header: React.FC<HeaderProps> = ({ content, part}) => { // Default value f
         {/* Conditionally render text */}
         {textComponent}
         {/* Conditionally apply image style */}
-        <Image
-          source={require("../../assets/car-bg.png")}
-          style={imageStyle}
-        />
+        <Image source={require("../../assets/car-bg.png")} style={imageStyle} />
       </Container>
-      <Container style={[
-        styles.lowerPart,
-        { flexGrow: part, flexBasis: part } // Apply dynamic styles
-      ]}></Container>
+      <Container
+        style={[
+          styles.lowerPart,
+          { flexGrow: part, flexBasis: part }, // Apply dynamic styles
+        ]}
+      ></Container>
     </Container>
   );
 };
