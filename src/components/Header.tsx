@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   // Image style
   imageWithContent: {
     width: "30%", // Adjust as needed
-    height: "50%",
+    height: "60%",
     position: "absolute", // Allows it to float over the background
     right: "10%", // Positions it 10% away from the right
     top: "30%", // Positions it 30% away from the top
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   content: {
     fontSize: 43,
     color: "black",
-    fontFamily: "Roboto-Black",
+    fontWeight: "bold",
     position: "absolute", // Floats it over the background
     left: "15%", // Positions it 15% away from the left
     top: "30%", // Positions it 30% away from the top
