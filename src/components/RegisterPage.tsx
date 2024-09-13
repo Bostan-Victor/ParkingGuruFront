@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import {
   StyleSheet,
-  TextInput,
   TouchableOpacity,
   View,
   Image,
   Dimensions,
 } from "react-native";
 import { Text, Container } from "../../assets/styles/globalStyles"; // Assuming you have global styles here
+import InputForm from "./InputForm"; // Import the new component
+import ClickableText from "./ClickableText";
 
 const { width, height } = Dimensions.get("window"); // Get screen width and height
+
 
 const RegisterPage: React.FC = () => {
   // State to manage form fields
@@ -18,6 +20,20 @@ const RegisterPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [identityCard, setIdentityCard] = useState("");
+
+  // Submit handler function to log the inputted information
+  const handleSubmit = () => {
+    console.log("Phone:", phone);
+    console.log("Email:", email);
+    console.log("Password:", password);
+    console.log("Identity Card:", identityCard);
+  };
+
+  // Handle navigation to Sign Up page
+  const handleSignInNavigation = () => {
+    console.log("Navigating to Sign Up Page");
+    // Add your navigation logic here (e.g., navigation.navigate('SignUpPage'))
+  };
 
   return (
     <Container style={styles.container}>
@@ -34,59 +50,34 @@ const RegisterPage: React.FC = () => {
         <Text style={styles.headerText}>Create{"\n"}Account</Text>
       </View>
 
-      {/* Form section with grey background and rounded corners */}
-      <View style={styles.formContainer}>
-        {/* Phone number field */}
-        <View style={styles.inputGroup}>
-          <View style={styles.phoneInputContainer}>
-            <TextInput
-              style={styles.phoneInput}
-              placeholder="Phone number"
-              keyboardType="phone-pad"
-              value={phone}
-              onChangeText={setPhone}
-            />
-          </View>
-        </View>
+      {/* Use the InputForm component */}
+      <InputForm
+        phone={phone}
+        setPhone={setPhone}
+        email={email}
+        setEmail={setEmail}
+        password={password}
+        setPassword={setPassword}
+        identityCard={identityCard}
+        setIdentityCard={setIdentityCard}
+        showPhoneInput={true} // Show or hide fields as needed
+        showEmailInput={true}
+        showPasswordInput={true}
+        showIdentityCardInput={true}
+        onSubmit={handleSubmit} // Add the onSubmit prop
+      />
 
-        {/* Email field */}
-        <View style={styles.inputGroup}>
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            keyboardType="email-address"
-            value={email}
-            onChangeText={setEmail}
-          />
-        </View>
-        {/* Password field */}
-        <View style={styles.inputGroup}>
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-          />
-        </View>
-        {/* Identity Card field */}
-        <View style={styles.inputGroup}>
-          <View style={styles.identityCardContainer}>
-            <TextInput
-              style={styles.identityInput}
-              placeholder="Identity card"
-              value={identityCard}
-              onChangeText={setIdentityCard}
-            />
-            <Text style={styles.optionalText}>Optional</Text>
-          </View>
-        </View>
-      </View>
-
-      {/* Sign-up Button - Now outside the grey box */}
-      <TouchableOpacity style={styles.signUpButton}>
+      {/* Yellow Submit Button - Outside the gray box */}
+      <TouchableOpacity style={styles.signUpButton} onPress={handleSubmit}>
         <Text style={styles.signUpButtonText}>SIGN UP</Text>
       </TouchableOpacity>
+
+      {/* Use the ClickableText component */}
+      <ClickableText
+        text="Already have an account? Sign in"
+        onPress={handleSignInNavigation}
+        highlightText="Sign in"
+      />
     </Container>
   );
 };
@@ -122,63 +113,6 @@ const styles = StyleSheet.create({
     fontSize: width * 0.1, // Dynamic font size based on screen width
     fontWeight: "bold",
     color: "#F0C10B", // Yellow color for "Create Account"
-  },
-  formContainer: {
-    backgroundColor: "#404040", // Gray background for form
-    borderRadius: 15, // Rounded corners
-    marginHorizontal: width * 0.05, // Dynamic horizontal margin
-    paddingVertical: height * 0.02, // Internal padding for form
-    paddingHorizontal: width * 0.05, // Dynamic padding based on screen width
-    alignSelf: "center", // Center the form horizontally
-    justifyContent: "center", // Ensure the form grows only with the content
-  },
-  inputGroup: {
-    marginBottom: height * 0.03, // Dynamic margin between inputs
-    width: width * 0.8,
-  },
-  phoneInputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  prefix: {
-    padding: 10,
-    backgroundColor: "#B0B0B0",
-    borderRadius: 5,
-    color: "#000",
-    fontWeight: "bold",
-    marginRight: 10,
-  },
-  phoneInput: {
-    flex: 1,
-    borderBottomWidth: 1,
-    borderBottomColor: "#000", // Black underline for inputs
-    padding: 10,
-    color: "#fff",
-  },
-  input: {
-    borderBottomWidth: 1,
-    borderBottomColor: "#000", // Black underline for inputs
-    padding: 10,
-    color: "#fff",
-  },
-  identityCardContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  identityInput: {
-    flex: 1,
-    borderBottomWidth: 1,
-    borderBottomColor: "#000", // Black underline for inputs
-    padding: 10,
-    color: "#fff",
-  },
-  optionalText: {
-    marginLeft: 10,
-    backgroundColor: "#B0B0B0",
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 5,
-    color: "#000",
   },
   signUpButton: {
     backgroundColor: "#F0C10B",
