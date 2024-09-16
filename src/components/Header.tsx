@@ -1,4 +1,4 @@
-import { StyleSheet, Image, View } from "react-native";
+import { StyleSheet, Image, View, Dimensions } from "react-native";
 import { Text, Container } from "../../assets/styles/globalStyles";
 import React from "react";
 
@@ -8,8 +8,10 @@ interface HeaderProps {
   part?: number; // Corrected type for part
 }
 
+// Get the dimensions of the screen
+const { width, height } = Dimensions.get("window");
+
 const Header: React.FC<HeaderProps> = ({ content, part }) => {
-  // Default value for part
   // Conditional styles and components
   const upperPartStyle = content
     ? styles.upperPartWithContent
@@ -67,16 +69,16 @@ const styles = StyleSheet.create({
 
   // Image style
   imageWithContent: {
-    width: "30%", // Adjust as needed
-    height: "60%",
+    width: width * 0.375, // Increased size to be more visible
+    height: height * 0.15,
     position: "absolute", // Allows it to float over the background
     right: "10%", // Positions it 10% away from the right
     top: "30%", // Positions it 30% away from the top
     zIndex: 1, // Ensures the image is on top of the background
   },
   imageNoContent: {
-    width: "40%",
-    height: "70%",
+    width: width * 0.3, // Increased size to be more visible
+    height: height * 0.2, // Adjust height proportionally
   },
 
   content: {
