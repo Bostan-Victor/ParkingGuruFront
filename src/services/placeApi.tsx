@@ -4,21 +4,17 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const placeApi = createApi({
   reducerPath: "placeApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://maps.googleapis.com/maps/api/place/",
+    baseUrl: "http://localhost:8080/auth/",
   }),
   endpoints: (builder) => ({
-    getPlaceAutocomplete: builder.query({
-      query: ({ input, location, apiKey }) => ({
-        url: "autocomplete/json",
-        params: {
-          input,
-          key: apiKey,
-          location,
-          radius: 500,
-        },
+    postData: builder.mutation({
+      query: (data) => ({
+        url: "register",
+        method: 'POST',
+        body: data,
       }),
     }),
   }),
 });
 
-export const { useGetPlaceAutocompleteQuery } = placeApi;
+export const { usePostDataMutation } = placeApi;

@@ -3,7 +3,6 @@ import {
   StyleSheet,
   TextInput,
   View,
-  Text,
   Dimensions,
   Alert,
   TouchableOpacity,
@@ -18,12 +17,14 @@ interface InputFormProps {
   setEmail?: Dispatch<SetStateAction<string>>;
   password?: string;
   setPassword?: Dispatch<SetStateAction<string>>;
-  identityCard?: string;
-  setIdentityCard?: Dispatch<SetStateAction<string>>;
+  firstName?: string;
+  setFirstName?: Dispatch<SetStateAction<string>>;
+  lastName?: string;
+  setLastName?: Dispatch<SetStateAction<string>>;
+
   showPhoneInput?: boolean;
   showEmailInput?: boolean;
   showPasswordInput?: boolean;
-  showIdentityCardInput?: boolean;
   onSubmit: () => void; // Function to trigger submission from the parent
 }
 
@@ -34,12 +35,13 @@ const InputForm: React.FC<InputFormProps> = ({
   setEmail,
   password,
   setPassword,
-  identityCard,
-  setIdentityCard,
+  firstName,
+  setFirstName,
+  lastName,
+  setLastName,
   showPhoneInput = true,
   showEmailInput = true,
   showPasswordInput = true,
-  showIdentityCardInput = true,
   onSubmit,
 }) => {
   // Function to handle phone number input
@@ -50,16 +52,18 @@ const InputForm: React.FC<InputFormProps> = ({
     }
   };
 
-  // Function to handle identity card input
-  const handleIdentityCardChange = (value: string) => {
-    const numericValue = value.replace(/[^0-9]/g, ""); // Allow only numbers
-    if (numericValue.length <= 13) {
-      setIdentityCard && setIdentityCard(numericValue); // Limit to 13 digits
-    }
-  };
-
   // Validation logic
   const validateInputs = () => {
+    if (!firstName || firstName.trim() === "") {
+      Alert.alert("Invalid First Name", "First name cannot be empty.");
+      return false;
+    }
+
+    if (!lastName || lastName.trim() === "") {
+      Alert.alert("Invalid Last Name", "Last name cannot be empty.");
+      return false;
+    }
+
     const phoneRegex = /^\d{1,9}$/; // Up to 9 digits
     if (showPhoneInput && !phoneRegex.test(phone || "")) {
       Alert.alert(
@@ -74,20 +78,6 @@ const InputForm: React.FC<InputFormProps> = ({
       Alert.alert("Invalid Email", "Please enter a valid email address.");
       return false;
     }
-
-    const identityCardRegex = /^\d{1,13}$/;
-    if (
-      showIdentityCardInput &&
-      identityCard &&
-      !identityCardRegex.test(identityCard)
-    ) {
-      Alert.alert(
-        "Invalid Identity Card",
-        "Identity card number should contain up to 13 digits."
-      );
-      return false;
-    }
-
     return true;
   };
 
@@ -101,6 +91,26 @@ const InputForm: React.FC<InputFormProps> = ({
 
   return (
     <View style={styles.formContainer}>
+      {/* First Name Input */}
+      <View style={styles.inputGroup}>
+        <TextInput
+          style={styles.input}
+          placeholder="First Name"
+          value={firstName}
+          onChangeText={setFirstName ? setFirstName : () => {}}
+        />
+      </View>
+
+      {/* Last Name Input */}
+      <View style={styles.inputGroup}>
+        <TextInput
+          style={styles.input}
+          placeholder="Last Name"
+          value={lastName}
+          onChangeText={setLastName ? setLastName : () => {}}
+        />
+      </View>
+
       {showPhoneInput && (
         <View style={styles.inputGroup}>
           <View style={styles.phoneInputContainer}>
@@ -138,23 +148,6 @@ const InputForm: React.FC<InputFormProps> = ({
           />
         </View>
       )}
-
-      {showIdentityCardInput && (
-        <View style={styles.inputGroup}>
-          <View style={styles.identityCardContainer}>
-            <TextInput
-              style={styles.identityInput}
-              placeholder="Identity card"
-              keyboardType="numeric"
-              value={identityCard}
-              onChangeText={handleIdentityCardChange}
-            />
-            <Text style={styles.optionalText}>Optional</Text>
-          </View>
-        </View>
-      )}
-
-      {/* Submit button */}
     </View>
   );
 };
@@ -189,25 +182,6 @@ const styles = StyleSheet.create({
     borderBottomColor: "#000",
     padding: 10,
     color: "#fff",
-  },
-  identityCardContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  identityInput: {
-    flex: 1,
-    borderBottomWidth: 1,
-    borderBottomColor: "#000",
-    padding: 10,
-    color: "#fff",
-  },
-  optionalText: {
-    marginLeft: 10,
-    backgroundColor: "#B0B0B0",
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 5,
-    color: "#000",
   },
   submitButton: {
     backgroundColor: "#F0C10B",
