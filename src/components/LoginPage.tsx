@@ -7,26 +7,34 @@ import {
   Dimensions,
 } from "react-native";
 import { Text, Container } from "../../assets/styles/globalStyles"; // Assuming you have global styles here
-import InputForm from "./InputForm"; // Import the new component
+import InputForm from "./InputForm"; // Import the InputForm component
 import ClickableText from "./ClickableText"; // Import the ClickableText component
+import { useNavigation } from "@react-navigation/native"; // Import useNavigation
 
 const { width, height } = Dimensions.get("window");
 
 const LoginPage: React.FC = () => {
+  // Access the navigation object to enable navigation between screens
+  const navigation = useNavigation();
+
   // State to manage form fields
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
 
   // Submit handler function to log the inputted information
   const handleSubmit = () => {
-    console.log("Phone:", phone);
-    console.log("Password:", password);
+    if (phone && password) {
+      console.log("Phone:", phone);
+      console.log("Password:", password);
+      // Handle login logic here (e.g., API call for authentication)
+    } else {
+      console.log("Please fill in all fields");
+    }
   };
 
-  // Handle navigation to Sign Up page
+  // Navigate to the Register page
   const handleSignUpNavigation = () => {
-    console.log("Navigating to Sign Up Page");
-    // Add your navigation logic here (e.g., navigation.navigate('SignUpPage'))
+    navigation.navigate; // Navigate to the Register page
   };
 
   return (
@@ -44,25 +52,25 @@ const LoginPage: React.FC = () => {
         <Text style={styles.headerText}>Welcome{"\n"}Back</Text>
       </View>
 
-      {/* Use the InputForm component */}
+      {/* InputForm for phone number and password */}
       <InputForm
         phone={phone}
         setPhone={setPhone}
         password={password}
         setPassword={setPassword}
-        showPhoneInput={true} // Show or hide fields as needed
-        showEmailInput={true}
-        showPasswordInput={false}
-        showIdentityCardInput={false}
-        onSubmit={handleSubmit} // Add the onSubmit prop
+        showPhoneInput={true}
+        showEmailInput={false} // Hiding email field for the login page
+        showPasswordInput={true} // Show password input
+        showIdentityCardInput={false} // Hide identity card input
+        onSubmit={handleSubmit}
       />
 
-      {/* Yellow Submit Button - Outside the gray box */}
+      {/* Yellow Sign In Button */}
       <TouchableOpacity style={styles.signUpButton} onPress={handleSubmit}>
         <Text style={styles.signUpButtonText}>SIGN IN</Text>
       </TouchableOpacity>
 
-      {/* Use the ClickableText component */}
+      {/* ClickableText for navigating to the Register page */}
       <ClickableText
         text="Don't have an account? Sign up"
         onPress={handleSignUpNavigation}
@@ -79,42 +87,42 @@ const styles = StyleSheet.create({
     backgroundColor: "#282424", // Dark background
   },
   carContainer: {
-    width: "100%", // Full width of the screen
-    flexDirection: "row", // Place image to the left
-    justifyContent: "flex-end", // Align the car image to the left
-    paddingHorizontal: width * 0.1, // Dynamic padding based on screen width
-    paddingTop: height * 0.05, // Dynamic padding based on screen height
-    alignItems: "center", // Vertically center the image
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    paddingHorizontal: width * 0.1,
+    paddingTop: height * 0.05,
+    alignItems: "center",
   },
   carImage: {
-    width: width * 0.35, // Adjust as necessary based on screen width
-    height: width * 0.35, // Maintain the aspect ratio
+    width: width * 0.35, // Adjust the size dynamically based on the screen width
+    height: width * 0.35,
     resizeMode: "contain",
   },
   textContainer: {
-    width: "100%", // Full width of the screen
-    flexDirection: "row", // Place text on the right
-    justifyContent: "flex-start", // Align the text to the right
-    paddingHorizontal: width * 0.1, // Dynamic padding based on screen width
-    paddingBottom: height * 0.02, // Dynamic padding based on screen height
-    alignItems: "center", // Vertically center the text
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    paddingHorizontal: width * 0.1,
+    paddingBottom: height * 0.02,
+    alignItems: "center",
   },
   headerText: {
     fontSize: width * 0.1, // Dynamic font size based on screen width
     fontWeight: "bold",
-    color: "#F0C10B", // Yellow color for "Create Account"
+    color: "#F0C10B", // Yellow color for "Welcome Back"
   },
   signUpButton: {
-    backgroundColor: "#F0C10B",
+    backgroundColor: "#F0C10B", // Yellow button background
     paddingVertical: height * 0.02, // Dynamic vertical padding
     borderRadius: 5,
     alignItems: "center",
-    marginHorizontal: width * 0.15, // Set button width smaller than input boxes
-    marginTop: height * 0.02, // Dynamic margin based on screen height
+    marginHorizontal: width * 0.15,
+    marginTop: height * 0.02, // Dynamic top margin
   },
   signUpButtonText: {
     color: "#000",
-    fontSize: width * 0.045, // Dynamic font size
+    fontSize: width * 0.045, // Dynamic font size for the button text
     fontWeight: "bold",
   },
 });

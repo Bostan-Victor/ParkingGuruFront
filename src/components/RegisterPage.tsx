@@ -9,28 +9,46 @@ import {
 import { Text, Container } from "../../assets/styles/globalStyles"; // Assuming you have global styles here
 import InputForm from "./InputForm"; // Import the new component
 import ClickableText from "./ClickableText";
+import { useNavigation } from "@react-navigation/native"; // Import the useNavigation hook
 
 const { width, height } = Dimensions.get("window");
 
 const RegisterPage: React.FC = () => {
   // State to manage form fields
+  const navigation = useNavigation(); // Access the navigation object
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [identityCard, setIdentityCard] = useState("");
 
-  // Submit handler function to log the inputted information
+  // Submit handler function to log the inputted information in JSON format
   const handleSubmit = () => {
-    console.log("Phone:", phone);
-    console.log("Email:", email);
-    console.log("Password:", password);
-    console.log("Identity Card:", identityCard);
+    // Create a JSON object with the form data
+    const formData = {
+      phoneNumber: phone,
+      email: email,
+      password: password,
+      uid: identityCard,
+    };
+
+    // Convert the formData to JSON format
+    const jsonFormData = JSON.stringify(formData);
+    console.log("Form Data in JSON format:", jsonFormData);
+    fetch("http://localhost:8080/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonFormData,
+    })
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.error("Error:", error));
   };
 
-  // Handle navigation to Sign Up page
+  // Handle navigation to Sign In page
   const handleSignInNavigation = () => {
-    console.log("Navigating to Sign Up Page");
-    // Add your navigation logic here (e.g., navigation.navigate('SignUpPage'))
+    navigation.navigate; // Navigate to the Login page
   };
 
   return (
