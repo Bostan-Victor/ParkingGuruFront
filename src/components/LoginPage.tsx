@@ -53,7 +53,6 @@ const LoginPage: React.FC = () => {
         showPhoneInput={true} // Show or hide fields as needed
         showEmailInput={true}
         showPasswordInput={false}
-        showIdentityCardInput={false}
         onSubmit={handleSubmit} // Add the onSubmit prop
       />
 
