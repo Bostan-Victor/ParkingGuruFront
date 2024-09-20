@@ -14,10 +14,10 @@ import LineSquare from "./LineSquare"; // Import the new component
 
 const { width } = Dimensions.get("window");
 
-const ProfilePage: React.FC = () => {
-  const [name, setName] = useState("John Johnson");
-  const [nickname, setNickname] = useState("@johndoe");
-  const [isVerified] = useState(true);
+const ProfilePagePolice: React.FC = () => {
+  const [name, setName] = useState("Mr Policeman");
+  const [nickname, setNickname] = useState("@musor");
+  const [functie] = useState("Police Officer");
   const [profileImage, setProfileImage] = useState(
     require("../../assets/profile.png")
   );
@@ -48,18 +48,13 @@ const ProfilePage: React.FC = () => {
       iconRight: require("../../assets/arrows.png"),
     },
     {
-      text: "Wallet settings",
+      text: "Ticket history",
       iconLeft: require("../../assets/walletSetings.png"),
       iconRight: require("../../assets/arrows.png"),
     },
     {
-      text: "Register car",
+      text: "Working schedule",
       iconLeft: require("../../assets/registerCar.png"),
-      iconRight: require("../../assets/arrows.png"),
-    },
-    {
-      text: "Verify account",
-      iconLeft: require("../../assets/verifyAccount.png"),
       iconRight: require("../../assets/arrows.png"),
     },
   ];
@@ -82,7 +77,6 @@ const ProfilePage: React.FC = () => {
     <Container style={styles.container}>
       {/* Profile Section */}
       <View style={styles.profileContainer}>
-        {/* Edit Icon */}
         <TouchableOpacity
           onPress={handleEditPress}
           style={styles.editIconButton}
@@ -93,7 +87,6 @@ const ProfilePage: React.FC = () => {
           />
         </TouchableOpacity>
 
-        {/* Profile Picture */}
         <TouchableOpacity onPress={handleImageChange}>
           <Image source={profileImage} style={styles.profileImage} />
         </TouchableOpacity>
@@ -116,17 +109,10 @@ const ProfilePage: React.FC = () => {
             <>
               <Text style={styles.nameText}>{name}</Text>
               <Text style={styles.nicknameText}>{nickname}</Text>
+              <Text style={styles.nicknameText}>{functie}</Text>
             </>
           )}
         </View>
-
-        {/* Conditionally render Verified Icon */}
-        {isVerified && (
-          <Image
-            source={require("../../assets/verifiedIcon.png")}
-            style={styles.verifiedIcon}
-          />
-        )}
       </View>
 
       {/* Account Details Section */}
@@ -188,16 +174,16 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    borderWidth: 2,
+    borderWidth: 0,
     borderColor: "#FFF",
     marginRight: 10,
   },
-  verifiedIcon: {
+  verifiedText: {
     position: "absolute",
     bottom: 10,
     right: 15,
-    width: 25,
-    height: 25,
+    fontSize: 14,
+    fontWeight: "bold",
   },
   editIconButton: {
     position: "absolute",
@@ -219,7 +205,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#FFFFFF",
+    color: "#FFF",
     marginBottom: 20,
     textAlign: "left",
   },
@@ -228,4 +214,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProfilePage;
+export default ProfilePagePolice;
