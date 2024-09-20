@@ -9,13 +9,18 @@ import {
 import { Text, Container } from "../../assets/styles/globalStyles"; // Assuming you have global styles here
 import InputForm from "./InputForm"; // Import the new component
 import ClickableText from "./ClickableText";
+<<<<<<< HEAD
 import DeviceInfo from 'react-native-device-info';
 import { usePostDataMutation } from '../services/placeApi'; // Import the mutation hook
+=======
+import { useNavigation } from "@react-navigation/native"; // Import the useNavigation hook
+>>>>>>> origin/sergiu-dev
 
 const { width, height } = Dimensions.get("window"); // Get screen width and height
 
 const RegisterPage: React.FC = () => {
   // State to manage form fields
+  const navigation = useNavigation(); // Access the navigation object
   const [phone, setPhone] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -25,6 +30,7 @@ const RegisterPage: React.FC = () => {
   // Hook from RTK Query to handle the POST request
   const [postData, { isLoading, isSuccess, isError, error }] = usePostDataMutation();
 
+<<<<<<< HEAD
   // Submit handler function to log the inputted information
   const handleSubmit = async () => {
     const uuid = DeviceInfo.getApplicationName(); // Get the uuid
@@ -41,12 +47,41 @@ const RegisterPage: React.FC = () => {
     } catch (err) {
       console.error("Error during submission:", err);
     }
+=======
+  // Submit handler function to log the inputted information in JSON format
+  const handleSubmit = () => {
+    // Create a JSON object with the form data
+    const formData = {
+      phoneNumber: phone,
+      email: email,
+      password: password,
+      uid: identityCard,
+    };
+
+    // Convert the formData to JSON format
+    const jsonFormData = JSON.stringify(formData);
+    console.log("Form Data in JSON format:", jsonFormData);
+    fetch("http://localhost:8080/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonFormData,
+    })
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.error("Error:", error));
+>>>>>>> origin/sergiu-dev
   };
 
   // Handle navigation to Sign In page
   const handleSignInNavigation = () => {
+<<<<<<< HEAD
     console.log("Navigating to Sign In Page");
     // Add your navigation logic here (e.g., navigation.navigate('SignInPage'))
+=======
+    navigation.navigate; // Navigate to the Login page
+>>>>>>> origin/sergiu-dev
   };
 
   return (
