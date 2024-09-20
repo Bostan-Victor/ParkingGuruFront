@@ -11,11 +11,13 @@ import InputForm from "./InputForm"; // Import the new component
 import ClickableText from "./ClickableText";
 import DeviceInfo from 'react-native-device-info';
 import { usePostDataMutation } from '../services/placeApi'; // Import the mutation hook
+import { useNavigation } from "@react-navigation/native"; // Import the useNavigation hook
 
 const { width, height } = Dimensions.get("window"); // Get screen width and height
 
 const RegisterPage: React.FC = () => {
   // State to manage form fields
+  const navigation = useNavigation(); // Access the navigation object
   const [phone, setPhone] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
