@@ -13,6 +13,8 @@ import { usePostDataMutation } from '../src/services/placeApi'; // Import the mu
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
+import uuid from 'react-native-uuid';
+import * as SecureStore from 'expo-secure-store';
 
 
 const { width, height } = Dimensions.get("window"); // Get screen width and height
@@ -27,31 +29,36 @@ const RegisterPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [Success, setSuccess] = useState(true);
+  const [token, setToken] = useState("");
 
   // Hook from RTK Query to handle the POST request
   const [postData, { isLoading, isSuccess, isError, error }] = usePostDataMutation();
 
   // Submit handler function to log the inputted information
   const handleSubmit = async () => {
-    //const uuid = DeviceInfo.getApplicationName(); // Get the uuid
+    navigation.navigate("VerifyPhone");
+    const _uuid = uuid.v4(); // Get the uuid
     const userInfo = {
-      email: email,       // Use email field here
-      phoneNumber: phone, // Use phone field here
-      password: password,
-      //uuid: uuid,         // Use the uuid obtained from DeviceInfo
+      email: email,
       firstName: firstName,
       lastName: lastName,
+      password: password,  // Use email field here
+      phoneNumber: phone,  // Use phone field here
+      uuid: _uuid,         // Use the uuid obtained from DeviceInfo
     };
     try {
-      await postData(userInfo);
-      if (Success) {
-        // Navigate to the RegisterCar screen upon successful registration
+      const response = await postData(userInfo).unwrap();  // Use unwrap() to directly access the result
+      SecureStore.setItemAsync('accessToken',response.accessToken);
+      //console.log("Response from server:", response.accessToken);  // This includes the body
+      setToken(response.accessToken);
+      if (token !== " "){
         navigation.navigate("VerifyPhone");
       }
     } catch (err) {
-      console.error("Error during submission:", err);
+      console.error("Error during submission:", err);  // Print the error in case of failure
     }
   };
+  
 
   // Handle navigation to Sign In page
   const handleSignInNavigation = () => {

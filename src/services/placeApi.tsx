@@ -14,7 +14,14 @@ export const placeApi = createApi({
         body: data,
       }),
     }),
+    loginUser: builder.mutation({
+      query: (data) => ({
+        url: "authenticate",  // Change the endpoint to "login"
+        method: 'POST',
+        body: data,
+      }),
+    }),
   }),
 });
 
-export const { usePostDataMutation } = placeApi;
+export const { usePostDataMutation, useLoginUserMutation } = placeApi;

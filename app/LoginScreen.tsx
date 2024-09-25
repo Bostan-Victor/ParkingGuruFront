@@ -12,6 +12,9 @@ import ClickableText from "./../src/components/ClickableText"; // Import the Cli
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
+import * as SecureStore from 'expo-secure-store';
+import { useLoginUserMutation } from '../src/services/placeApi'; // Import the login mutation hook
+
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Login">;
 const { width, height } = Dimensions.get("window");
@@ -23,15 +26,27 @@ const LoginPage: React.FC = () => {
   // State to manage form fields
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [token, setToken] = useState(" ");
+
+  // Get the mutation function from the hook
+  const [loginUser, { isLoading }] = useLoginUserMutation(); // Initialize loginUser mutation
 
   // Submit handler function to log the inputted information
-  const handleSubmit = () => {
-    if (phone && password) {
-      console.log("Phone:", phone);
-      console.log("Password:", password);
-      // Handle login logic here (e.g., API call for authentication)
-    } else {
-      console.log("Please fill in all fields");
+  const handleSubmit = async () => {  // Mark the function as async
+    const userInfo = {
+      username: phone,
+      password: password,
+    };
+    try {
+      const response = await loginUser(userInfo).unwrap();
+      setToken(response.accessToken);
+      if (response.accessToken) {
+        navigation.navigate("UserHome");
+      }
+      await SecureStore.setItemAsync('secure_token', response.accessToken); // Store token securely
+      setToken(response.accessToken);
+    } catch (err) {
+      console.error("Error during submission:", err);  // Print the error in case of failure
     }
   };
 
