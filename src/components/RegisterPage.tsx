@@ -9,9 +9,9 @@ import {
 import { Text, Container } from "../../assets/styles/globalStyles"; // Assuming you have global styles here
 import InputForm from "./InputForm"; // Import the new component
 import ClickableText from "./ClickableText";
-import DeviceInfo from 'react-native-device-info';
-import { usePostDataMutation } from '../services/placeApi'; // Import the mutation hook
-import { useNavigation } from "@react-navigation/native"; // Import the useNavigation hook
+import DeviceInfo from "react-native-device-info";
+import { usePostDataMutation } from "../services/placeApi"; // Import the mutation hook
+import { Link, useNavigation } from "@react-navigation/native"; // Import the useNavigation hook
 
 const { width, height } = Dimensions.get("window"); // Get screen width and height
 
@@ -25,16 +25,17 @@ const RegisterPage: React.FC = () => {
   const [password, setPassword] = useState("");
 
   // Hook from RTK Query to handle the POST request
-  const [postData, { isLoading, isSuccess, isError, error }] = usePostDataMutation();
+  const [postData, { isLoading, isSuccess, isError, error }] =
+    usePostDataMutation();
 
   // Submit handler function to log the inputted information
   const handleSubmit = async () => {
     const uuid = DeviceInfo.getApplicationName(); // Get the uuid
     const userInfo = {
-      email: email,       // Use email field here
+      email: email, // Use email field here
       phoneNumber: phone, // Use phone field here
       password: password,
-      uuid: uuid,         // Use the uuid obtained from DeviceInfo
+      uuid: uuid, // Use the uuid obtained from DeviceInfo
       firstName: firstName,
       lastName: lastName,
     };
@@ -85,13 +86,18 @@ const RegisterPage: React.FC = () => {
       />
 
       {/* Yellow Submit Button - Outside the gray box */}
-      <TouchableOpacity style={styles.signUpButton} onPress={handleSubmit} disabled={isLoading}>
+      <TouchableOpacity
+        style={styles.signUpButton}
+        onPress={handleSubmit}
+        disabled={isLoading}
+      >
         <Text style={styles.signUpButtonText}>
-          {isLoading ? 'Loading...' : 'SIGN UP'}
+          {isLoading ? "Loading..." : "SIGN UP"}
         </Text>
       </TouchableOpacity>
 
       {/* Use the ClickableText component */}
+      <Link to="/Login">Go to Login</Link>
       <ClickableText
         text="Already have an account? Sign in"
         onPress={handleSignInNavigation}
@@ -100,11 +106,16 @@ const RegisterPage: React.FC = () => {
 
       {/* Error or Success messages */}
       {isError && (
-        <Text style={{ color: 'red' }}>
-          Error: {'data' in error ? (error.data as { message: string }).message : 'Submission failed'}
+        <Text style={{ color: "red" }}>
+          Error:{" "}
+          {"data" in error
+            ? (error.data as { message: string }).message
+            : "Submission failed"}
         </Text>
       )}
-      {isSuccess && <Text style={{ color: 'green' }}>Registration successful!</Text>}
+      {isSuccess && (
+        <Text style={{ color: "green" }}>Registration successful!</Text>
+      )}
     </Container>
   );
 };

@@ -7,13 +7,10 @@ import Login from "../src/components/LoginPage";
 import Register from "../src/components/RegisterPage";
 import RegisterCar from "./RegisterCar";
 import PoliceParking from "./PoliceParking";
-import UserParking from "./UserParking";
-import Header from "../src/components/ProfilePagePolice";
+import Header from "../src/components/VerifyPage";
 
 export default function HomeScreen() {
   const { locationAddress, price } = useFetchLocation();
 
-  return (
-    <UserParking/>
-  );
+  return <Header />;
 }
