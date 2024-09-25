@@ -5,17 +5,27 @@ import React from "react";
 import Header from "../src/components/Header";
 import Button from "../src/components/Button";
 import Input from "../src/components/InputBox";
-import Login from "../src/components/LoginPage";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../App";
 
-export default function HomePage() {
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, "RegisterCar">;
+
+export default function RegsiterCar() {
+    const navigation = useNavigation<NavigationProp>();
+    const handleButton = () => {
+        navigation.navigate("UserParking");
+      };
+
     return (
-      <Container> {/* Wrap everything inside a View */}
+      <Container> 
         <Header content="Register your car" part={3} />
         <Container style={styles.inputContainer}>
             <Input width={300} height={50} placeholder="Enter your number plate" />
         </Container>
+        <Text style={styles.text}>Verify your plate number !</Text>
         <Container style={styles.buttonContainer}>
-            <Button content="Park" />
+            <Button content="Park" onPress={handleButton} />
         </Container>
       </Container>
     );
@@ -24,13 +34,19 @@ export default function HomePage() {
 const styles = StyleSheet.create({
     // Style for the button container
     buttonContainer: {
-        top: "50%", // Positioning the button vertically
+        top: "45%", // Positioning the button vertically
         position: "absolute",
         alignSelf: "center", // Centers the button horizontally
     },
     inputContainer: {
         position: "absolute",
-        bottom: "60%",
+        bottom: "63%",
         alignSelf: "center"
-    }
+    },
+    text: {
+        position: "absolute",
+        top: "40%",
+        color: "red",
+        alignSelf: "center" // Space between text and button
+      },
 });

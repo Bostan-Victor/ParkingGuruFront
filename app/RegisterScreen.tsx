@@ -6,38 +6,48 @@ import {
   Image,
   Dimensions,
 } from "react-native";
-import { Text, Container } from "../../assets/styles/globalStyles"; // Assuming you have global styles here
-import InputForm from "./InputForm"; // Import the new component
-import ClickableText from "./ClickableText";
-import DeviceInfo from 'react-native-device-info';
-import { usePostDataMutation } from '../services/placeApi'; // Import the mutation hook
+import { Text, Container } from "../assets/styles/globalStyles"; // Assuming you have global styles here
+import InputForm from "../src/components/InputForm"; // Import the new component
+import ClickableText from "../src/components/ClickableText";
+import { usePostDataMutation } from '../src/services/placeApi'; // Import the mutation hook
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../App";
+
 
 const { width, height } = Dimensions.get("window"); // Get screen width and height
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Register">;
 
 const RegisterPage: React.FC = () => {
   // State to manage form fields
+  const navigation = useNavigation<NavigationProp>();
   const [phone, setPhone] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [Success, setSuccess] = useState(true);
 
   // Hook from RTK Query to handle the POST request
   const [postData, { isLoading, isSuccess, isError, error }] = usePostDataMutation();
 
   // Submit handler function to log the inputted information
   const handleSubmit = async () => {
-    const uuid = DeviceInfo.getApplicationName(); // Get the uuid
+    //const uuid = DeviceInfo.getApplicationName(); // Get the uuid
     const userInfo = {
       email: email,       // Use email field here
       phoneNumber: phone, // Use phone field here
       password: password,
-      uuid: uuid,         // Use the uuid obtained from DeviceInfo
+      //uuid: uuid,         // Use the uuid obtained from DeviceInfo
       firstName: firstName,
       lastName: lastName,
     };
     try {
-      await postData(userInfo); // Call the mutation with userInfo object
+      await postData(userInfo);
+      if (Success) {
+        // Navigate to the RegisterCar screen upon successful registration
+        navigation.navigate("VerifyPhone");
+      }
     } catch (err) {
       console.error("Error during submission:", err);
     }
@@ -45,16 +55,16 @@ const RegisterPage: React.FC = () => {
 
   // Handle navigation to Sign In page
   const handleSignInNavigation = () => {
-    console.log("Navigating to Sign In Page");
-    // Add your navigation logic here (e.g., navigation.navigate('SignInPage'))
+    navigation.navigate("Login");
   };
+
 
   return (
     <Container style={styles.container}>
       {/* Container for the car on the left */}
       <View style={styles.carContainer}>
         <Image
-          source={require("../../assets/car-bg.png")} // Add your car image here
+          source={require("./../assets/car-bg.png")} // Add your car image here
           style={styles.carImage}
         />
       </View>

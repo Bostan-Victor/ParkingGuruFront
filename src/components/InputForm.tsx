@@ -1,12 +1,7 @@
 import React, { Dispatch, SetStateAction } from "react";
-import {
-  StyleSheet,
-  TextInput,
-  View,
-  Dimensions,
-  Alert,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, TextInput, View, Dimensions } from "react-native";
+import { MaterialIcons } from '@expo/vector-icons'; // Import icons from Expo
+import { Text } from "../../assets/styles/globalStyles"; // Assuming you're using your global styles
 
 const { width, height } = Dimensions.get("window");
 
@@ -21,11 +16,12 @@ interface InputFormProps {
   setFirstName?: Dispatch<SetStateAction<string>>;
   lastName?: string;
   setLastName?: Dispatch<SetStateAction<string>>;
-
   showPhoneInput?: boolean;
   showEmailInput?: boolean;
   showPasswordInput?: boolean;
-  onSubmit: () => void; // Function to trigger submission from the parent
+  showFirstNameInput?: boolean;  // New prop to control the visibility of first name
+  showLastNameInput?: boolean;   // New prop to control the visibility of last name
+  onSubmit?: () => void;
 }
 
 const InputForm: React.FC<InputFormProps> = ({
@@ -42,89 +38,50 @@ const InputForm: React.FC<InputFormProps> = ({
   showPhoneInput = true,
   showEmailInput = true,
   showPasswordInput = true,
+  showFirstNameInput = true,  // Default to true, can be overridden in LoginPage
+  showLastNameInput = true,   // Default to true, can be overridden in LoginPage
   onSubmit,
 }) => {
-  // Function to handle phone number input
-  const handlePhoneChange = (value: string) => {
-    const numericValue = value.replace(/[^0-9]/g, ""); // Allow only numbers
-    if (numericValue.length <= 9) {
-      setPhone && setPhone(numericValue); // Limit to 9 digits
-    }
-  };
-
-  // Validation logic
-  const validateInputs = () => {
-    if (!firstName || firstName.trim() === "") {
-      Alert.alert("Invalid First Name", "First name cannot be empty.");
-      return false;
-    }
-
-    if (!lastName || lastName.trim() === "") {
-      Alert.alert("Invalid Last Name", "Last name cannot be empty.");
-      return false;
-    }
-
-    const phoneRegex = /^\d{1,9}$/; // Up to 9 digits
-    if (showPhoneInput && !phoneRegex.test(phone || "")) {
-      Alert.alert(
-        "Invalid Phone",
-        "Phone number should contain up to 9 digits."
-      );
-      return false;
-    }
-
-    const emailRegex = /\S+@\S+\.\S+/;
-    if (showEmailInput && !emailRegex.test(email || "")) {
-      Alert.alert("Invalid Email", "Please enter a valid email address.");
-      return false;
-    }
-    return true;
-  };
-
-  // Handle form submission
-  const handleFormSubmit = () => {
-    if (validateInputs()) {
-      // Trigger the parent onSubmit function
-      onSubmit();
-    }
-  };
-
   return (
     <View style={styles.formContainer}>
-      {/* First Name Input */}
-      <View style={styles.inputGroup}>
-        <TextInput
-          style={styles.input}
-          placeholder="First Name"
-          value={firstName}
-          onChangeText={setFirstName ? setFirstName : () => {}}
-        />
-      </View>
-
-      {/* Last Name Input */}
-      <View style={styles.inputGroup}>
-        <TextInput
-          style={styles.input}
-          placeholder="Last Name"
-          value={lastName}
-          onChangeText={setLastName ? setLastName : () => {}}
-        />
-      </View>
-
-      {showPhoneInput && (
+      {/* Conditional rendering for First Name field */}
+      {showFirstNameInput && (
         <View style={styles.inputGroup}>
-          <View style={styles.phoneInputContainer}>
-            <TextInput
-              style={styles.phoneInput}
-              placeholder="Phone number"
-              keyboardType="phone-pad"
-              value={phone}
-              onChangeText={handlePhoneChange}
-            />
-          </View>
+          <TextInput
+            style={styles.input}
+            placeholder="First Name"
+            value={firstName}
+            onChangeText={setFirstName}
+          />
         </View>
       )}
 
+      {/* Conditional rendering for Last Name field */}
+      {showLastNameInput && (
+        <View style={styles.inputGroup}>
+          <TextInput
+            style={styles.input}
+            placeholder="Last Name"
+            value={lastName}
+            onChangeText={setLastName}
+          />
+        </View>
+      )}
+
+      {/* Phone Number Input */}
+      {showPhoneInput && (
+        <View style={styles.inputGroup}>
+          <TextInput
+            style={styles.input}
+            placeholder="Phone Number"
+            keyboardType="phone-pad"
+            value={phone}
+            onChangeText={setPhone}
+          />
+        </View>
+      )}
+
+      {/* Email Input */}
       {showEmailInput && (
         <View style={styles.inputGroup}>
           <TextInput
@@ -132,11 +89,12 @@ const InputForm: React.FC<InputFormProps> = ({
             placeholder="Email"
             keyboardType="email-address"
             value={email}
-            onChangeText={setEmail ? setEmail : () => {}}
+            onChangeText={setEmail}
           />
         </View>
       )}
 
+      {/* Password Input */}
       {showPasswordInput && (
         <View style={styles.inputGroup}>
           <TextInput
@@ -144,7 +102,7 @@ const InputForm: React.FC<InputFormProps> = ({
             placeholder="Password"
             secureTextEntry
             value={password}
-            onChangeText={setPassword ? setPassword : () => {}}
+            onChangeText={setPassword}
           />
         </View>
       )}
@@ -163,37 +121,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   inputGroup: {
-    marginBottom: height * 0.03,
+    marginBottom: height * 0.02,
     width: width * 0.8,
-  },
-  phoneInputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  phoneInput: {
-    flex: 1,
-    borderBottomWidth: 1,
-    borderBottomColor: "#000",
-    padding: 10,
-    color: "#fff",
   },
   input: {
     borderBottomWidth: 1,
     borderBottomColor: "#000",
     padding: 10,
     color: "#fff",
-  },
-  submitButton: {
-    backgroundColor: "#F0C10B",
-    paddingVertical: height * 0.02,
-    borderRadius: 5,
-    alignItems: "center",
-    marginTop: height * 0.02,
-  },
-  submitButtonText: {
-    color: "#000",
-    fontSize: width * 0.045,
-    fontWeight: "bold",
   },
 });
 

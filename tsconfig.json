@@ -13,6 +13,6 @@
     "src",
     "env.d.ts",
     "assets/styles/styled.d.ts"
-  ],
+, "app/VerifyPhoneScreen.tsx", "app/LoginScreen.tsx", "app/OtpVerifyPage.tsx"  ],
   "extends": "expo/tsconfig.base"
 }

@@ -12,7 +12,7 @@ export default function CarCircle() {
       <View style={styles.imageContainer}>
         {/* Circle image (background) */}
         <Image
-          source={require("../../assets/circle.png")}
+          source={require("../../assets/1.png")}
           style={styles.imageCircle}
         />
         {/* Car image (centered in the circle) */}

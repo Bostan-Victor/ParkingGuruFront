@@ -5,9 +5,19 @@ import React from "react";
 import Header from "../src/components/Header";
 import Button from "../src/components/Button";
 import Input from "../src/components/InputBox";
-import Login from "../src/components/LoginPage";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../App";
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, "VerifyCar">;
+
 
 export default function HomePage() {
+    const navigation = useNavigation<NavigationProp>();
+    const handleButton = () => {
+        navigation.navigate("PoliceParking");
+      };
+    // const useFetchLocation
     return (
       <Container> {/* Wrap everything inside a View */}
         <Header content="Verify Car" part={3} />
@@ -15,7 +25,7 @@ export default function HomePage() {
             <Input width={300} height={50} placeholder="Enter your number plate" />
         </Container>
         <Container style={styles.buttonContainer}>
-            <Button content="Verify" />
+            <Button content="Verify" onPress={handleButton}/>
         </Container>
       </Container>
     );
@@ -24,13 +34,13 @@ export default function HomePage() {
 const styles = StyleSheet.create({
     // Style for the button container
     buttonContainer: {
-        top: "50%", // Positioning the button vertically
+        top: "45%", // Positioning the button vertically
         position: "absolute",
         alignSelf: "center", // Centers the button horizontally
     },
     inputContainer: {
         position: "absolute",
-        bottom: "60%",
+        bottom: "63%",
         alignSelf: "center"
     }
 });

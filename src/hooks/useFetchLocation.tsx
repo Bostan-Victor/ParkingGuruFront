@@ -21,7 +21,7 @@ export const useFetchLocation = (): UseFetchLocationReturn => {
       try {
         const { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== "granted") {
-          setLocationAddress("Permission to access location was denied");
+          setLocationAddress("Permission was denied");
           return;
         }
 

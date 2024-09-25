@@ -69,8 +69,8 @@ const styles = StyleSheet.create({
 
   // Image style
   imageWithContent: {
-    width: width * 0.375, // Increased size to be more visible
-    height: height * 0.15,
+    width: width * 0.275, // Increased size to be more visible
+    height: height * 0.12,
     position: "absolute", // Allows it to float over the background
     right: "10%", // Positions it 10% away from the right
     top: "30%", // Positions it 30% away from the top
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   },
 
   content: {
-    fontSize: 43,
+    fontSize: 38,
     color: "black",
     fontWeight: "bold",
     position: "absolute", // Floats it over the background

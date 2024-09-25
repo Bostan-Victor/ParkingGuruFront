@@ -28,7 +28,8 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#000",
-    fontSize: width * 0.06, // Dynamic font size
+    fontSize: width * 0.05,
+    paddingHorizontal:30, // Dynamic font size
     fontWeight: "bold",
   },
 });

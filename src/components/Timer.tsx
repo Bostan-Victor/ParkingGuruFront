@@ -3,11 +3,16 @@ import { StyleSheet, View, Dimensions } from "react-native";
 import { Container, Text } from "../../assets/styles/globalStyles"; // Assuming you're using a global styles file
 
 // Get device width and height for dynamic sizing
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
-export default function Timer({ hasTicket }: { hasTicket: number }) {
+interface TimerProps {
+  hasTicket: number;
+  initialSeconds?: number; // Optional prop for initial seconds
+}
+
+export default function Timer({ hasTicket, initialSeconds = 0 }: TimerProps) {
   // State to track the elapsed time in seconds
-  const [seconds, setSeconds] = useState(0);
+  const [seconds, setSeconds] = useState(initialSeconds);
   const [price, setPrice] = useState(15);
 
   // Use useEffect to start a timer when the component mounts
@@ -16,7 +21,7 @@ export default function Timer({ hasTicket }: { hasTicket: number }) {
       const interval = setInterval(() => {
         setSeconds((prevSeconds) => prevSeconds + 1);
       }, 1000); // Update the timer every second
-  
+
       // Cleanup the interval when the component unmounts
       return () => clearInterval(interval);
     }
@@ -40,7 +45,7 @@ export default function Timer({ hasTicket }: { hasTicket: number }) {
     <Container style={styles.container}>
       {/* Display the "Parking time:" label in white */}
       <Text style={styles.labelText}>Parking time:</Text>
-      
+
       {/* Conditionally render the timer or the "No ticket!" text */}
       {hasTicket ? (
         <>
@@ -66,13 +71,14 @@ const styles = StyleSheet.create({
     alignItems: "center", // Center the timer horizontally
   },
   labelText: {
-    fontSize: width * 0.05, // Dynamic font size for "Parking time:"
+    marginTop: height * 0.2,
+    fontSize: width * 0.08, // Dynamic font size for "Parking time:"
     color: "#fff", // White text
     marginBottom: 10, // Space between label and timer
-    fontWeight: "bold",
+    fontWeight: "normal",
   },
   timerText: {
-    fontSize: width * 0.08, // Dynamic font size for timer
+    fontSize: width * 0.14, // Dynamic font size for timer
     color: "#fff", // White text for the timer
     fontWeight: "bold",
   },
@@ -80,7 +86,7 @@ const styles = StyleSheet.create({
     fontSize: width * 0.045, // Dynamic font size for price
     color: "#fff", // White text for the price
     marginTop: 15, // Add some space above the price
-    fontWeight: "bold",
+    fontWeight: "normal",
   },
   noTicketText: {
     fontSize: width * 0.06, // Dynamic font size for "No ticket!" text
