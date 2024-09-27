@@ -53,7 +53,7 @@ export default function Timer({ hasTicket, initialSeconds = 0 }: TimerProps) {
           <Text style={styles.timerText}>{formatTime(seconds)}</Text>
 
           {/* Display the price with white text */}
-          <Text style={styles.priceText}>{price} mdl</Text>
+          <Text style={styles.priceText}>{price} mdl/h</Text>
         </>
       ) : (
         <Text style={styles.noTicketText}>No ticket!</Text>

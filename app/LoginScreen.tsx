@@ -6,90 +6,83 @@ import {
   Image,
   Dimensions,
 } from "react-native";
-import { Text, Container } from "./../assets/styles/globalStyles"; // Assuming you have global styles here
-import InputForm from "./../src/components/InputForm"; // Import the InputForm component
-import ClickableText from "./../src/components/ClickableText"; // Import the ClickableText component
+import { Text, Container } from "./../assets/styles/globalStyles";
+import InputForm from "./../src/components/InputForm";
+import ClickableText from "./../src/components/ClickableText";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
-import * as SecureStore from 'expo-secure-store';
-import { useLoginUserMutation } from '../src/services/placeApi'; // Import the login mutation hook
-
+import { useLoginUserMutation } from '../src/services/placeApi';
+import { storeToken } from './../src/hooks/useToken';  // Correct token handling
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Login">;
 const { width, height } = Dimensions.get("window");
 
 const LoginPage: React.FC = () => {
-  // Access the navigation object to enable navigation between screens
   const navigation = useNavigation<NavigationProp>();
 
-  // State to manage form fields
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [token, setToken] = useState(" ");
 
-  // Get the mutation function from the hook
-  const [loginUser, { isLoading }] = useLoginUserMutation(); // Initialize loginUser mutation
+  const [loginUser, { isLoading }] = useLoginUserMutation();
 
-  // Submit handler function to log the inputted information
-  const handleSubmit = async () => {  // Mark the function as async
+  const handleSubmit = async () => {
     const userInfo = {
       username: phone,
       password: password,
     };
     try {
       const response = await loginUser(userInfo).unwrap();
-      setToken(response.accessToken);
+
+      console.log('Access Token:', response.accessToken);
+
       if (response.accessToken) {
-        navigation.navigate("UserHome");
+        try {
+          //await storeToken(response.accessToken);  // Store token securely
+          await storeToken(response.accessToken);
+          navigation.navigate("UserHome");
+        } catch (err) {
+          console.error('Error storing the token:', err);
+        }
       }
-      await SecureStore.setItemAsync('secure_token', response.accessToken); // Store token securely
-      setToken(response.accessToken);
     } catch (err) {
-      console.error("Error during submission:", err);  // Print the error in case of failure
+      console.error("Error during submission:", err);
     }
   };
 
-  // Navigate to the Register page
   const handleSignUpNavigation = () => {
-    navigation.navigate("Register"); // Navigate to the Register page
+    navigation.navigate("Register");
   };
 
   return (
     <Container style={styles.container}>
-      {/* Container for the car on the left */}
       <View style={styles.carContainer}>
         <Image
-          source={require("./../assets/car-bg.png")} // Add your car image here
+          source={require("./../assets/car-bg.png")}
           style={styles.carImage}
         />
       </View>
-
-      {/* Container for the text on the right */}
       <View style={styles.textContainer}>
         <Text style={styles.headerText}>Welcome{"\n"}Back</Text>
       </View>
 
-      {/* InputForm for phone number and password */}
       <InputForm
         phone={phone}
         setPhone={setPhone}
         password={password}
         setPassword={setPassword}
         showPhoneInput={true}
-        showEmailInput={false} // Hiding email field for the login page
+        showEmailInput={false}
         showPasswordInput={true}
         showFirstNameInput={false}
         showLastNameInput={false}
         onSubmit={handleSubmit}
       />
 
-      {/* Yellow Sign In Button */}
       <TouchableOpacity style={styles.signUpButton} onPress={handleSubmit}>
         <Text style={styles.signUpButtonText}>LOGIN</Text>
       </TouchableOpacity>
 
-      {/* ClickableText for navigating to the Register page */}
       <ClickableText
         text="Don't have an account? Sign up"
         onPress={handleSignUpNavigation}
@@ -103,7 +96,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "column",
-    backgroundColor: "#282424", // Dark background
+    backgroundColor: "#282424",
   },
   carContainer: {
     width: "100%",
@@ -114,7 +107,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   carImage: {
-    width: width * 0.35, // Adjust the size dynamically based on the screen width
+    width: width * 0.35,
     height: width * 0.35,
     resizeMode: "contain",
   },
@@ -127,21 +120,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   headerText: {
-    fontSize: width * 0.1, // Dynamic font size based on screen width
+    fontSize: width * 0.1,
     fontWeight: "bold",
-    color: "#F0C10B", // Yellow color for "Welcome Back"
+    color: "#F0C10B",
   },
   signUpButton: {
-    backgroundColor: "#F0C10B", // Yellow button background
-    paddingVertical: height * 0.02, // Dynamic vertical padding
+    backgroundColor: "#F0C10B",
+    paddingVertical: height * 0.02,
     borderRadius: 5,
     alignItems: "center",
     marginHorizontal: width * 0.15,
-    marginTop: height * 0.02, // Dynamic top margin
+    marginTop: height * 0.02,
   },
   signUpButtonText: {
     color: "#000",
-    fontSize: width * 0.045, // Dynamic font size for the button text
+    fontSize: width * 0.045,
     fontWeight: "bold",
   },
 });

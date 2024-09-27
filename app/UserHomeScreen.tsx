@@ -1,7 +1,7 @@
 import { StyleSheet, Image, Dimensions } from "react-native";
 import { useFetchLocation } from "./../src/hooks/useFetchLocation";
 import { Text, Container } from "./../assets/styles/globalStyles";
-import React from "react";
+import React, { useState } from "react";
 import { SwipeButton } from "@arelstone/react-native-swipe-button";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -13,6 +13,7 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList, "UserHome">;
 export default function UserHomeScreen() {
   const navigation = useNavigation<NavigationProp>(); // Call useNavigation to get navigation object
   const { locationAddress, price } = useFetchLocation();
+
 
   const handleButton = () => {
     navigation.navigate("RegisterCar");
@@ -27,19 +28,20 @@ export default function UserHomeScreen() {
         />
       </Container>
       <Container style={styles.lowerPart}>
-        {/* Center the address and price horizontally */}
         <Text style={styles.address}>{locationAddress}</Text>
         <Text style={styles.price}>Price: {price} mdl/h</Text>
         <SwipeButton
-          onComplete={() => handleButton()} // Use navigation object here
-          Icon={
-            <Image
-              source={require('./../assets/icons8-arrow-96.svg')}
-              style={{ width: 40, height: 40 }}
-            />
-          }
-          title={"Slide to park"}
+      onComplete={() => handleButton()}
+      Icon={
+        <Image
+          source={require('./../assets/icons8-arrow-96.svg')}
+          style={{ width: 40, height: 40 }}
         />
+      }
+      title={"Slide to park"}
+      underlayStyle={{ backgroundColor: '#282424' }} 
+      goBackToStart={true}
+    />
       </Container>
     </Container>
   );

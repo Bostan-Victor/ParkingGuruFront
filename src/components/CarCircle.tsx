@@ -1,12 +1,15 @@
 import { StyleSheet, View, Image, Dimensions } from "react-native";
-import React, { useState } from "react";
+import React from "react";
 import { Container, Text } from "../../assets/styles/globalStyles";
 
 // Get device width and height for dynamic sizing
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
-export default function CarCircle() {
-  const [plate, setPlate] = useState("JES 456");
+interface CarCircleProps {
+  plate: string; // Define the plate prop
+}
+
+export default function CarCircle({ plate }: CarCircleProps) {
   return (
     <Container style={styles.container}>
       <View style={styles.imageContainer}>

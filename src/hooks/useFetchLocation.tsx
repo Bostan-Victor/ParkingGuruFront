@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import * as Location from "expo-location";
+import { Platform } from "react-native";
 
 interface ReverseGeocodeResult {
   street: string | null;
@@ -21,11 +22,22 @@ export const useFetchLocation = (): UseFetchLocationReturn => {
       try {
         const { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== "granted") {
+          console.log("Permission was denied");
           setLocationAddress("Permission was denied");
           return;
         }
 
-        const location = await Location.getCurrentPositionAsync({});
+        // Use Location.getCurrentPositionAsync only on mobile
+        let location;
+        if (Platform.OS !== 'web') {
+          location = await Location.getCurrentPositionAsync({});
+        } else {
+          // Fallback for web
+          location = await new Promise<GeolocationPosition>((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject);
+          });
+        }
+
         const { latitude, longitude } = location.coords;
 
         const reverseGeocode: ReverseGeocodeResult[] =
@@ -38,11 +50,13 @@ export const useFetchLocation = (): UseFetchLocationReturn => {
           const { street, city } = reverseGeocode[0];
           setLocationAddress(`${street || ""}, ${city || ""}`);
         } else {
-          setLocationAddress("No address found for the current location.");
+          console.log("No address found for the current location.");
+          setLocationAddress("Permission was denied");
         }
       } catch (error) {
         console.error("useFetchLocation file error: ", error);
-        setLocationAddress("Failed to fetch location data.");
+        console.log("Failed to fetch location data.");
+        setLocationAddress("Permission was denied");
       }
     };
 
