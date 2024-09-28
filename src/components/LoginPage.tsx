@@ -58,11 +58,10 @@ const LoginPage: React.FC = () => {
         setPhone={setPhone}
         password={password}
         setPassword={setPassword}
-        showPhoneInput={true}
-        showEmailInput={false} // Hiding email field for the login page
-        showPasswordInput={true} // Show password input
-        showIdentityCardInput={false} // Hide identity card input
-        onSubmit={handleSubmit}
+        showPhoneInput={true} // Show or hide fields as needed
+        showEmailInput={true}
+        showPasswordInput={false}
+        onSubmit={handleSubmit} // Add the onSubmit prop
       />
 
       {/* Yellow Sign In Button */}

@@ -9,46 +9,47 @@ import {
 import { Text, Container } from "../../assets/styles/globalStyles"; // Assuming you have global styles here
 import InputForm from "./InputForm"; // Import the new component
 import ClickableText from "./ClickableText";
-import { useNavigation } from "@react-navigation/native"; // Import the useNavigation hook
+import DeviceInfo from "react-native-device-info";
+import { usePostDataMutation } from "../services/placeApi"; // Import the mutation hook
+import { useNavigation } from "@react-navigation/native";
 
-const { width, height } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window"); // Get screen width and height
 
 const RegisterPage: React.FC = () => {
   // State to manage form fields
   const navigation = useNavigation(); // Access the navigation object
   const [phone, setPhone] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [identityCard, setIdentityCard] = useState("");
 
-  // Submit handler function to log the inputted information in JSON format
-  const handleSubmit = () => {
-    // Create a JSON object with the form data
-    const formData = {
-      phoneNumber: phone,
-      email: email,
+  // Hook from RTK Query to handle the POST request
+  const [postData, { isLoading, isSuccess, isError, error }] =
+    usePostDataMutation();
+
+  // Submit handler function to log the inputted information
+  const handleSubmit = async () => {
+    const uuid = DeviceInfo.getApplicationName(); // Get the uuid
+    const userInfo = {
+      email: email, // Use email field here
+      phoneNumber: phone, // Use phone field here
       password: password,
-      uid: identityCard,
+      uuid: uuid, // Use the uuid obtained from DeviceInfo
+      firstName: firstName,
+      lastName: lastName,
     };
-
-    // Convert the formData to JSON format
-    const jsonFormData = JSON.stringify(formData);
-    console.log("Form Data in JSON format:", jsonFormData);
-    fetch("http://localhost:8080/auth/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: jsonFormData,
-    })
-      .then((response) => response.json())
-      .then((data) => console.log(data))
-      .catch((error) => console.error("Error:", error));
+    try {
+      await postData(userInfo); // Call the mutation with userInfo object
+    } catch (err) {
+      console.error("Error during submission:", err);
+    }
   };
 
   // Handle navigation to Sign In page
   const handleSignInNavigation = () => {
-    navigation.navigate; // Navigate to the Login page
+    console.log("Navigating to Sign In Page");
+    // Add your navigation logic here (e.g., navigation.navigate('SignInPage'))
   };
 
   return (
@@ -74,18 +75,25 @@ const RegisterPage: React.FC = () => {
         setEmail={setEmail}
         password={password}
         setPassword={setPassword}
-        identityCard={identityCard}
-        setIdentityCard={setIdentityCard}
+        lastName={lastName}
+        setLastName={setLastName}
+        firstName={firstName}
+        setFirstName={setFirstName}
         showPhoneInput={true} // Show or hide fields as needed
         showEmailInput={true}
         showPasswordInput={true}
-        showIdentityCardInput={true}
         onSubmit={handleSubmit} // Add the onSubmit prop
       />
 
       {/* Yellow Submit Button - Outside the gray box */}
-      <TouchableOpacity style={styles.signUpButton} onPress={handleSubmit}>
-        <Text style={styles.signUpButtonText}>SIGN UP</Text>
+      <TouchableOpacity
+        style={styles.signUpButton}
+        onPress={handleSubmit}
+        disabled={isLoading}
+      >
+        <Text style={styles.signUpButtonText}>
+          {isLoading ? "Loading..." : "SIGN UP"}
+        </Text>
       </TouchableOpacity>
 
       {/* Use the ClickableText component */}
@@ -94,6 +102,19 @@ const RegisterPage: React.FC = () => {
         onPress={handleSignInNavigation}
         highlightText="Sign in"
       />
+
+      {/* Error or Success messages */}
+      {isError && (
+        <Text style={{ color: "red" }}>
+          Error:{" "}
+          {"data" in error
+            ? (error.data as { message: string }).message
+            : "Submission failed"}
+        </Text>
+      )}
+      {isSuccess && (
+        <Text style={{ color: "green" }}>Registration successful!</Text>
+      )}
     </Container>
   );
 };
