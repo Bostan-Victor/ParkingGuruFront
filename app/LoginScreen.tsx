@@ -13,8 +13,8 @@ import ClickableText from "./../src/components/ClickableText";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
-import { useLoginUserMutation } from '../src/services/placeApiregister';
-import { storeToken } from './../src/hooks/useToken';
+import { useLoginUserMutation } from "../src/services/placeApiregister";
+import { storeToken } from "./../src/hooks/useToken";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Login">;
 const { width, height } = Dimensions.get("window");
@@ -33,7 +33,7 @@ const LoginPage: React.FC = () => {
       username: phone,
       password: password,
     };
-    
+
     setErrorMessage(null); // Reset error message before new request
 
     try {
@@ -42,21 +42,23 @@ const LoginPage: React.FC = () => {
 
       if (response.accessToken) {
         try {
-          await storeToken(response.accessToken);  // Store token securely
-          navigation.navigate("UserHome");  // Navigate to home screen on success
+          await storeToken(response.accessToken); // Store token securely
+          navigation.navigate("UserHome"); // Navigate to home screen on success
         } catch (err) {
-          console.error('Error storing the token:', err);
+          console.error("Error storing the token:", err);
           setErrorMessage("Unable to store token. Please try again.");
         }
       }
     } catch (err) {
       console.error("Error during submission:", err);
-      setErrorMessage("Login failed. Please check your credentials and try again.");
+      setErrorMessage(
+        "Login failed. Please check your credentials and try again."
+      );
     }
   };
 
   const handleSignUpNavigation = () => {
-    //navigation.navigate("Register");
+    navigation.navigate("Register");
   };
 
   return (
@@ -84,20 +86,20 @@ const LoginPage: React.FC = () => {
         onSubmit={handleSubmit}
       />
 
-      <TouchableOpacity 
-        style={styles.signUpButton} 
-        onPress={handleSubmit} 
-        disabled={isLoading}  // Disable button when loading
+      <TouchableOpacity
+        style={styles.signUpButton}
+        onPress={handleSubmit}
+        disabled={isLoading} // Disable button when loading
       >
         {isLoading ? (
-          <ActivityIndicator size="small" color="#000" />  // Show loader when loading
+          <ActivityIndicator size="small" color="#000" /> // Show loader when loading
         ) : (
           <Text style={styles.signUpButtonText}>LOGIN</Text>
         )}
       </TouchableOpacity>
 
       {errorMessage && (
-        <Text style={{ color: 'red', marginTop: 10 }}>{errorMessage}</Text>  // Show error message if any
+        <Text style={{ color: "red", marginTop: 10 }}>{errorMessage}</Text> // Show error message if any
       )}
 
       <ClickableText

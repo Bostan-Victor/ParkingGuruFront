@@ -4,13 +4,17 @@ import { Text, Container } from "../assets/styles/globalStyles";
 import React, { useState, useEffect } from "react";
 import Header from "../src/components/Header";
 import Button from "../src/components/Button";
-import InputBox from "../src/components/InputBox"; 
+import InputBox from "../src/components/InputBox";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
-import { useRegisterCarMutation } from './../src/services/placeApi';
+import { useRegisterCarMutation } from "./../src/services/placeApi";
+import BackProfileHeader from "../src/components/NavBar"; // Import the BackProfileHeader component
 
-type NavigationProp = NativeStackNavigationProp<RootStackParamList, "RegisterCar">;
+type NavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  "RegisterCar"
+>;
 
 export default function RegisterCar() {
   const { locationAddress } = useFetchLocation();
@@ -24,14 +28,22 @@ export default function RegisterCar() {
     setLocation(locationAddress);
   }, [locationAddress]);
 
+  const handleBackPress = () => {
+    navigation.goBack(); // Navigate back to the previous page
+  };
+
+  const handleProfilePress = () => {
+    navigation.navigate("Profile"); // Navigate to the profile page
+  };
+
   const handleButton = async () => {
     if (!plate.trim()) {
-      console.error('Plate number cannot be empty');
+      console.error("Plate number cannot be empty");
       return;
     }
 
     if (location === "Waiting for location...") {
-      console.error('Location has not been updated yet');
+      console.error("Location has not been updated yet");
       return;
     }
 
@@ -42,27 +54,35 @@ export default function RegisterCar() {
 
     try {
       const result = await registerCar(userInfo).unwrap();
-      console.log('Reservation created:', result);
+      console.log("Reservation created:", result);
       // Navigate after successful registration
       navigation.navigate("UserParking");
     } catch (err) {
-      console.error('Error creating reservation:', error);
+      console.error("Error creating reservation:", error);
     }
   };
 
   return (
-    <Container> 
+    <Container>
+      {/* Back and Profile header */}
+      <BackProfileHeader
+        onBackPress={handleBackPress}
+        onProfilePress={handleProfilePress}
+      />
+
       <Header content="Register your car" part={3} />
       <Container style={styles.inputContainer}>
-        <InputBox 
-          width={300} 
-          height={50} 
-          placeholder="Enter your number plate" 
-          value={plate} 
-          onChangeText={setPlate} 
+        <InputBox
+          width={300}
+          height={50}
+          placeholder="Enter your number plate"
+          value={plate}
+          onChangeText={setPlate}
         />
       </Container>
-      <Text style={styles.text}>Please verify the car number plate{"\n"}before submitting it</Text>
+      <Text style={styles.text}>
+        Please verify the car number plate{"\n"}before submitting it
+      </Text>
       <Container style={styles.buttonContainer}>
         <Button content="Park" onPress={handleButton} />
       </Container>
@@ -72,7 +92,7 @@ export default function RegisterCar() {
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    top: "45%", 
+    top: "45%",
     position: "absolute",
     alignSelf: "center",
   },
