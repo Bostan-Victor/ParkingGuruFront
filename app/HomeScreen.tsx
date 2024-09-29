@@ -37,7 +37,7 @@ export default function HomeScreen() {
     }
 
     if (error) {
-      navigation.navigate("RegisterCar");
+      navigation.navigate("UserParking");
     }
   }, [response, error]);
 
