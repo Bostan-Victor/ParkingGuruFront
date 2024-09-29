@@ -5,6 +5,7 @@ import {
   View,
   Image,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import { Text, Container } from "./../assets/styles/globalStyles";
 import InputForm from "./../src/components/InputForm";
@@ -12,8 +13,8 @@ import ClickableText from "./../src/components/ClickableText";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
-import { useLoginUserMutation } from '../src/services/placeApi';
-import { storeToken } from './../src/hooks/useToken';  // Correct token handling
+import { useLoginUserMutation } from '../src/services/placeApiregister';
+import { storeToken } from './../src/hooks/useToken';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Login">;
 const { width, height } = Dimensions.get("window");
@@ -23,35 +24,39 @@ const LoginPage: React.FC = () => {
 
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null); // Add error state
 
-  const [loginUser, { isLoading }] = useLoginUserMutation();
+  const [loginUser, { isLoading }] = useLoginUserMutation(); // Use isLoading to control loading state
 
   const handleSubmit = async () => {
     const userInfo = {
       username: phone,
       password: password,
     };
-    try {
-      const response = await loginUser(userInfo).unwrap();
+    
+    setErrorMessage(null); // Reset error message before new request
 
-      console.log('Access Token:', response.accessToken);
+    try {
+      const response = await loginUser(userInfo).unwrap(); // Execute login request
+      console.log(response);
 
       if (response.accessToken) {
         try {
-          //await storeToken(response.accessToken);  // Store token securely
-          await storeToken(response.accessToken);
-          navigation.navigate("UserHome");
+          await storeToken(response.accessToken);  // Store token securely
+          navigation.navigate("UserHome");  // Navigate to home screen on success
         } catch (err) {
           console.error('Error storing the token:', err);
+          setErrorMessage("Unable to store token. Please try again.");
         }
       }
     } catch (err) {
       console.error("Error during submission:", err);
+      setErrorMessage("Login failed. Please check your credentials and try again.");
     }
   };
 
   const handleSignUpNavigation = () => {
-    navigation.navigate("Register");
+    //navigation.navigate("Register");
   };
 
   return (
@@ -79,9 +84,21 @@ const LoginPage: React.FC = () => {
         onSubmit={handleSubmit}
       />
 
-      <TouchableOpacity style={styles.signUpButton} onPress={handleSubmit}>
-        <Text style={styles.signUpButtonText}>LOGIN</Text>
+      <TouchableOpacity 
+        style={styles.signUpButton} 
+        onPress={handleSubmit} 
+        disabled={isLoading}  // Disable button when loading
+      >
+        {isLoading ? (
+          <ActivityIndicator size="small" color="#000" />  // Show loader when loading
+        ) : (
+          <Text style={styles.signUpButtonText}>LOGIN</Text>
+        )}
       </TouchableOpacity>
+
+      {errorMessage && (
+        <Text style={{ color: 'red', marginTop: 10 }}>{errorMessage}</Text>  // Show error message if any
+      )}
 
       <ClickableText
         text="Don't have an account? Sign up"

@@ -125,6 +125,25 @@ export const placeApi = createApi({
         }),
       }),
     }),
+    // New request for fetching user profile
+    getUserProfile: builder.mutation({
+      query: () => ({
+        url: "graphql",
+        method: 'POST',
+        body: JSON.stringify({
+          query: `
+            query {
+              getUserProfile {
+                firstName
+                lastName
+                email
+                phoneNumber
+              }
+            }
+          `,
+        }),
+      }),
+    }),
   }),
 });
 
@@ -135,5 +154,6 @@ export const {
   useLoginUserMutation, 
   useRegisterCarMutation, 
   useGetReservationMutation,
-  useEndReservationMutation // New hook for endReservation
+  useEndReservationMutation, 
+  useGetUserProfileMutation
 } = placeApi;

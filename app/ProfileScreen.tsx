@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -7,19 +7,28 @@ import {
   TextInput,
   Dimensions,
   Image,
+  Linking,
 } from "react-native";
 import { launchImageLibrary } from "react-native-image-picker";
 import { Container } from "./../assets/styles/globalStyles";
-import LineSquare from "./../src/components/LineSquare"; // Import the new component
+import LineSquare from "./../src/components/LineSquare";
+import { useGetUserProfileMutation } from "./../src/services/placeApi";
+import { deleteToken } from "./../src/hooks/useToken";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../App";
+
 
 const { width } = Dimensions.get("window");
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Profile">;
 
 const ProfilePage: React.FC = () => {
-  const [name, setName] = useState("John Johnson");
-  const [phone, setPhone] = useState("+373 79 200 001");
-  const [email, setEmail] = useState("user@gmail.com");
-  const [nickname, setNickname] = useState("@johndoe");
-  const [isVerified] = useState(true);
+  const [getUserProfile, { data, error, isLoading }] = useGetUserProfileMutation();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [number, setNumber] = useState("");
+  const navigation = useNavigation<NavigationProp>();
   const [profileImage, setProfileImage] = useState(
     require("./../assets/profile.png")
   );
@@ -29,12 +38,42 @@ const ProfilePage: React.FC = () => {
     setIsEditing(!isEditing);
   };
 
-  const handleImageChange = () => {
-    const options = {
-      mediaType: "photo" as const,
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const response = await getUserProfile({});
+        console.log(response);
+        setFirstName(response.data?.data.getUserProfile.firstName);
+        setLastName(response.data?.data.getUserProfile.lastName);
+        setEmail(response.data?.data.getUserProfile.email);
+        setNumber(response.data?.data.getUserProfile.phoneNumber);
+      } catch (err) {
+        console.error('Error fetching user profile:', err); 
+      }
     };
 
-    launchImageLibrary(options, (response) => {
+    fetchUserProfile();
+  }, [getUserProfile]);
+
+  // Handle log out action
+  const handleLogout = async () => {
+    try {
+      await deleteToken(); // Call the deleteToken function to remove the access token
+      console.log('Token deleted successfully');
+      // Optionally navigate the user to the login screen or another page
+      navigation.navigate('Login'); // Assuming you have a 'Login' screen
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
+  };
+
+  // Handle call center redirection
+  const handleCallCenter = () => {
+    Linking.openURL("tel:+12345678");
+  };
+
+  const handleImageChange = () => {
+    launchImageLibrary({ mediaType: "photo" }, (response) => {
       if (response.assets) {
         const selectedImage = response.assets[0].uri;
         setProfileImage({ uri: selectedImage });
@@ -42,60 +81,13 @@ const ProfilePage: React.FC = () => {
     });
   };
 
-  // Data for Account Details section
-  const accountDetails = [
-    {
-      text: "Personal info",
-      iconLeft: require("./../assets/personalInfo.png"),
-      iconRight: require("./../assets/arrows.png"),
-    },
-    {
-      text: "Wallet settings",
-      iconLeft: require("./../assets/walletSetings.png"),
-      iconRight: require("./../assets/arrows.png"),
-    },
-    {
-      text: "Register car",
-      iconLeft: require("./../assets/registerCar.png"),
-      iconRight: require("./../assets/arrows.png"),
-    },
-    {
-      text: "Verify account",
-      iconLeft: require("./../assets/verifyAccount.png"),
-      iconRight: require("./../assets/arrows.png"),
-    },
-  ];
-
-  // Data for Help and Support section
-  const helpSupport = [
-    {
-      text: "Help center",
-      iconLeft: require("./../assets/helpCenter.png"),
-      iconRight: require("./../assets/arrows.png"),
-    },
-    {
-      text: "Log out",
-      iconLeft: require("./../assets/logOut.png"),
-      iconRight: require("./../assets/arrows.png"),
-    },
-  ];
-
   return (
     <Container style={styles.container}>
-      {/* Profile Section */}
       <View style={styles.profileContainer}>
-        {/* Edit Icon */}
-        <TouchableOpacity
-          onPress={handleEditPress}
-          style={styles.editIconButton}
-        >
-          <Image
-            source={require("./../assets/editIcon.png")}
-            style={styles.icon}
-          />
+        <TouchableOpacity onPress={handleEditPress} style={styles.editIconButton}>
+          <Image source={require("./../assets/editIcon.png")} style={styles.icon} />
         </TouchableOpacity>
 
-        {/* Profile Picture */}
         <TouchableOpacity onPress={handleImageChange}>
           <Image source={profileImage} style={styles.profileImage} />
         </TouchableOpacity>
@@ -103,48 +95,46 @@ const ProfilePage: React.FC = () => {
         <View style={styles.infoContainer}>
           {isEditing ? (
             <>
-              <TextInput
-                value={name}
-                onChangeText={setName}
-                style={styles.editableText}
-              />
-              <TextInput
-                value={nickname}
-                onChangeText={setNickname}
-                style={styles.editableText}
-              />
+              <TextInput value={firstName} onChangeText={setFirstName} style={styles.editableText} />
+              <TextInput value={lastName} onChangeText={setLastName} style={styles.editableText} />
             </>
           ) : (
             <>
-              <Text style={styles.nameText}>{name}</Text>
-              <Text style={styles.nicknameText}>{nickname}</Text>
+              <Text style={styles.nameText}>{firstName}</Text>
+              <Text style={styles.nicknameText}>{lastName}</Text>
             </>
           )}
         </View>
-
-        {/* Conditionally render Verified Icon */}
-        {isVerified && (
-          <Image
-            source={require("./../assets/verifiedIcon.png")}
-            style={styles.verifiedIcon}
-          />
-        )}
       </View>
 
-      {/* Account Details Section */}
       <View style={styles.detailsWrapper}>
         <Text style={styles.sectionTitle}>Account details</Text>
-        <Text style={styles.phone}>Phone number: {phone}</Text>
+        <Text style={styles.phone}>Phone number: {number}</Text>
         <Text style={styles.email}>Email address: {email}</Text>
       </View>
 
-      {/* Spacer to push Help and Support to the bottom */}
       <View style={styles.spacer} />
 
-      {/* Help and Support Section */}
       <View style={styles.helpWrapper}>
         <Text style={styles.sectionTitle}>Help and Support</Text>
-        <LineSquare lines={helpSupport} />
+
+        {/* Log Out Button */}
+        <TouchableOpacity style={styles.button} onPress={handleLogout}>
+          <View style={styles.buttonContent}>
+            <Image source={require("./../assets/logOut.png")} style={styles.icon} />
+            <Text style={styles.buttonText}>Log Out</Text>
+            <Image source={require("./../assets/arrows.png")} style={styles.iconRight} />
+          </View>
+        </TouchableOpacity>
+
+        {/* Call Center Button */}
+        <TouchableOpacity style={styles.button} onPress={handleCallCenter}>
+          <View style={styles.buttonContent}>
+            <Image source={require("./../assets/helpCenter.png")} style={styles.icon} />
+            <Text style={styles.buttonText}>Call Center</Text>
+            <Image source={require("./../assets/arrows.png")} style={styles.iconRight} />
+          </View>
+        </TouchableOpacity>
       </View>
     </Container>
   );
@@ -195,13 +185,6 @@ const styles = StyleSheet.create({
     borderColor: "#FFF",
     marginRight: 10,
   },
-  verifiedIcon: {
-    position: "absolute",
-    bottom: 10,
-    right: 15,
-    width: 25,
-    height: 25,
-  },
   editIconButton: {
     position: "absolute",
     top: 10,
@@ -210,6 +193,11 @@ const styles = StyleSheet.create({
   icon: {
     width: 25,
     height: 25,
+  },
+  iconRight: {
+    width: 15,
+    height: 15,
+    marginLeft: "auto",
   },
   detailsWrapper: {
     paddingTop: 30,
@@ -226,25 +214,42 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: "left",
   },
+  email: {
+    fontSize: 20,
+    marginTop: 20,
+    color: "white",
+    fontWeight: "normal",
+    alignSelf: "center", 
+  },
+  phone: {
+    fontSize: 20,
+    marginTop: 10,
+    color: "white",
+    fontWeight: "normal",
+    alignSelf: "center", 
+  },
   spacer: {
-    flex: 1, // Spacer to push Help and Support to the bottom
+    flex: 1, // This spacer pushes Help and Support to the bottom
   },
-  email:{
-    fontSize: 20,
-    marginTop: width * 0.2, // Adjusted position for the address text
-    position: "absolute",
-    color: "white",
-    fontWeight: "normal",
-    alignSelf: "center", 
+  button: {
+    backgroundColor: "#797979",
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+    flexDirection: "row",
+    alignItems: "center",
   },
-  phone:{
-    fontSize: 20,
-    marginTop: width * 0.4,// Adjusted position for the address text
-    position: "absolute",
-    color: "white",
-    fontWeight: "normal",
-    alignSelf: "center", 
-  }
+  buttonContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+  },
+  buttonText: {
+    fontSize: 16,
+    color: "#000",
+    marginLeft: 10,
+    fontWeight: "bold",
+  },
 });
 
 export default ProfilePage;

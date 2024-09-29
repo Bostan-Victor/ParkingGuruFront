@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   TouchableOpacity,
@@ -12,6 +12,8 @@ import ClickableText from "../src/components/ClickableText"; // Importing the Cl
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App"; // Import the navigation types
+import { useGetUserProfileMutation } from "./../src/services/placeApi";
+
 
 const { width, height } = Dimensions.get("window"); // Get screen width and height
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "OtpVerify">;
@@ -20,6 +22,8 @@ const VerifyPage: React.FC = () => {
   const [otp, setOtp] = useState("");
   const [phone, setPhone] = useState("+373 79 001 200"); // State to manage OTP input
   const navigation = useNavigation<NavigationProp>();
+  const [getUserProfile, { data, error, isLoading }] = useGetUserProfileMutation();
+
 
   const handleSignInNavigation = () => {
     navigation.navigate("UserHome");
@@ -30,6 +34,19 @@ const VerifyPage: React.FC = () => {
     console.log("Resend OTP clicked");
     // Logic for resending OTP can go here
   };
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const response = await getUserProfile({});
+        console.log(response);
+        setPhone(response.data?.data.getUserProfile.phoneNumber);
+      } catch (err) {
+        console.error('Error fetching user profile:', err); 
+      }
+    };
+
+    fetchUserProfile();
+  }, [getUserProfile]);
 
   return (
     <Container style={styles.container}>

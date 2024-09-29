@@ -23,22 +23,25 @@ export default function HomeScreen() {
     if (response) {
       const isSuccess = response.data?.isUserPolice.success;
       const reservation = response.data?.isUserPolice.reservation;
-      if (isSuccess===true){
+
+      if (isSuccess === true) {
         navigation.navigate("VerifyCar");
-      }
-      if (isSuccess===false && reservation===null){
-        navigation.navigate("UserHome");
-      }
-      if (isSuccess===false && reservation!==null){
+      } 
+      if (isSuccess === false && reservation === null) {
+        //navigation.navigate("UserHome");
+        navigation.navigate("OtpVerify");
+      } 
+      if (isSuccess === false && reservation !== null) {
         navigation.navigate("UserParking");
       }
     }
 
     if (error) {
-      console.log("Error:", error);
+      navigation.navigate("Login");
     }
   }, [response, error]);
+
   return (
-    <Register />
+    <Register/>
   );
 }

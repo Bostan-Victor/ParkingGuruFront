@@ -16,7 +16,7 @@ import VerifyCar from "./app/VerifyCarScreen";
 import VerifyPhone from "./app/VerifyPhoneScreen";
 import OtpVerify from "./app/OtpVerifyPage"
 import PoliceParking from "./app/PoliceParkingScreen";
-
+import Profile from "./app/ProfileScreen";
 
 
 
@@ -31,7 +31,8 @@ export type RootStackParamList = { // Add export keyword here
   VerifyCar: undefined;
   VerifyPhone: undefined;
   OtpVerify: undefined; 
-  PoliceParking: undefined; 
+  PoliceParking: undefined;
+  Profile: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -48,6 +49,7 @@ export default function App() {
     { name: "VerifyPhone", component: VerifyPhone },
     { name: "OtpVerify", component: OtpVerify },
     { name: "PoliceParking", component: PoliceParking },
+    { name: "Profile", component: Profile },
   ];
 
   return (
