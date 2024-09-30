@@ -17,6 +17,8 @@ import { deleteToken } from "./../src/hooks/useToken";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
+import Navbar from "./../src/components/NavBar";
+
 
 
 const { width } = Dimensions.get("window");
@@ -72,6 +74,10 @@ const ProfilePage: React.FC = () => {
     Linking.openURL("tel:+12345678");
   };
 
+  const handleBackPress = () => {
+    navigation.navigate('UserHome');
+  };
+
   const handleImageChange = () => {
     launchImageLibrary({ mediaType: "photo" }, (response) => {
       if (response.assets) {
@@ -83,6 +89,7 @@ const ProfilePage: React.FC = () => {
 
   return (
     <Container style={styles.container}>
+      <Navbar onBackPress={handleBackPress} />
       <View style={styles.profileContainer}>
         <TouchableOpacity onPress={handleEditPress} style={styles.editIconButton}>
           <Image source={require("./../assets/editIcon.png")} style={styles.icon} />

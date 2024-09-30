@@ -5,6 +5,7 @@ import {
   View,
   Image,
   Dimensions,
+  Platform,
 } from "react-native";
 import { Text, Container } from "../assets/styles/globalStyles"; // Assuming you have global styles here
 import InputForm from "../src/components/InputForm"; // Import the new component
@@ -15,8 +16,8 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
 import uuid from 'react-native-uuid';
 import { storeToken } from './../src/hooks/useToken';
-
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from 'expo-secure-store';
 
 const { width, height } = Dimensions.get("window"); // Get screen width and height
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Register">;
@@ -30,6 +31,7 @@ const RegisterPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(""); // State to hold error message
   const [token, setToken] = useState("");
+  
 
   const [postData, { isLoading, isSuccess, isError, error }] = usePostDataMutation();
 
@@ -40,7 +42,17 @@ const RegisterPage: React.FC = () => {
       setErrorMessage("All fields are required.");
       return; // Do not proceed with the request
     }
-
+    const storePhone = async (phoneNumber: string) => {
+      try {
+        if (Platform.OS === 'web') {
+          await AsyncStorage.setItem('phoneNumber', phoneNumber);
+        } else {
+          await SecureStore.setItemAsync('phoneNumber', phoneNumber);
+        }
+      } catch (error) {
+        console.error("Error storing phone", error);
+      }
+    };
     const _uuid = uuid.v4(); // Generate UUID
     const userInfo = {
       email: email,
@@ -57,8 +69,10 @@ const RegisterPage: React.FC = () => {
 
       if (response.accessToken) {
         try {
-          await storeToken(response.accessToken);  // Store token securely
-          navigation.navigate("OtpVerify");  // Navigate to home screen on success
+          await storeToken(response.accessToken); 
+          await storePhone(phone);
+          //navigation.navigate("OtpVerify");  // Navigate to home screen on success
+          navigation.navigate("UserHome");
         } catch (err) {
           console.error('Error storing the token:', err);
           setErrorMessage("Unable to store token. Please try again.");

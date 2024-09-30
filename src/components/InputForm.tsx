@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "#000",
     padding: 10,
     color: "#fff",
-    backgroundColor: 'red'
+    //backgroundColor: 'red'
   },
 });
 

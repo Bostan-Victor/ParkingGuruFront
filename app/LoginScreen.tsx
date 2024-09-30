@@ -56,7 +56,7 @@ const LoginPage: React.FC = () => {
   };
 
   const handleSignUpNavigation = () => {
-    //navigation.navigate("Register");
+    navigation.navigate("Register");
   };
 
   return (

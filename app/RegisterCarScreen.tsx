@@ -9,6 +9,7 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
 import { useRegisterCarMutation } from './../src/services/placeApi';
+import Navbar from "./../src/components/NavBar";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "RegisterCar">;
 
@@ -50,8 +51,18 @@ export default function RegisterCar() {
     }
   };
 
+  const handleBackPress = () => {
+    navigation.navigate("UserHome");
+
+  };
+
+  const handleProfilePress = () => {
+    navigation.navigate("Profile");
+  };
+
   return (
     <Container> 
+      <Navbar onBackPress={handleBackPress} onProfilePress={handleProfilePress} />
       <Header content="Register your car" part={3} />
       <Container style={styles.inputContainer}>
         <InputBox 
