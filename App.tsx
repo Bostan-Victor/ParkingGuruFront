@@ -53,7 +53,7 @@ export default function App() {
   ];
 
   return (
-    <Provider store={store}>
+    <Provider store={store}> 
       <ThemeProvider theme={theme}>
         <NavigationContainer>
           <Stack.Navigator

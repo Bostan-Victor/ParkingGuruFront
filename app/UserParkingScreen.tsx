@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions, Image } from "react-native";
+import { StyleSheet, Dimensions, Image, Alert } from "react-native";
 import { Container, Text } from "../assets/styles/globalStyles";
 import React, { useState, useEffect } from "react";
 import Circle from "../src/components/CarCircle";
@@ -11,7 +11,10 @@ import { useGetReservationMutation, useEndReservationMutation } from './../src/s
 // import Navbar from "./../src/components/NavBar"; // Commenting out Navbar import
 
 const { width, height } = Dimensions.get("window");
-type NavigationProp = NativeStackNavigationProp<RootStackParamList, "UserParking">;
+type NavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  "UserParking"
+>;
 
 export default function UserParking() {
   const navigation = useNavigation<NavigationProp>();
@@ -25,12 +28,27 @@ export default function UserParking() {
 
   const handleButton = async () => {
     try {
+      // End the reservation
       const result = await endReservation({}).unwrap();
-      console.log('Reservation ended:', result);
+      console.log("Reservation ended:", result);
+
+      // Show the notification with the amount and phone number
+      Alert.alert(
+        "Parking Ended",
+        `The amount of xxxx mdl will be charged from your phone number xxxxxxxxx`,
+        [
+          {
+            text: "OK",
+            onPress: () => {
+              // Navigate the user to UserHome after they acknowledge the message
+              navigation.navigate("UserHome");
+            },
+          },
+        ]
+      );
     } catch (error) {
-      console.error('Error ending reservation:', error);
+      console.error("Error ending reservation:", error);
     }
-    navigation.navigate("UserHome");
   };
 
   const handleReservation = async () => {
@@ -39,12 +57,12 @@ export default function UserParking() {
       if (result.data?.getActiveReservation.reservation) {
         setPlate(result.data.getActiveReservation.reservation.plateNumber);
         setAddress(result.data.getActiveReservation.reservation.address);
-        setTime(result.data.getActiveReservation.elapsedTime); 
+        setTime(result.data.getActiveReservation.elapsedTime);
       } else {
-        console.log('No active reservation found');
+        console.log("No active reservation found");
       }
     } catch (err) {
-      console.error('Error fetching reservation:', error);
+      console.error("Error fetching reservation:", error);
     } finally {
       setLoading(false); // Set loading to false after fetching
     }
@@ -79,12 +97,12 @@ export default function UserParking() {
           onComplete={handleButton}
           Icon={
             <Image
-              source={require('./../assets/icons8-arrow-96.svg')}
+              source={require("./../assets/icons8-arrow-96.svg")}
               style={{ width: 40, height: 40 }}
             />
           }
           title={"Slide to end parking"}
-          underlayStyle={{ backgroundColor: '#282424' }} 
+          underlayStyle={{ backgroundColor: "#282424" }}
           goBackToStart={true}
         />
       </Container>
@@ -95,9 +113,9 @@ export default function UserParking() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center", 
-    alignItems: "center", 
-    backgroundColor: "#282424", 
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#282424",
   },
   circle: {
     position: "absolute",
@@ -110,7 +128,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     top: "73%",
     position: "absolute",
-    alignSelf: "center", 
+    alignSelf: "center",
   },
   address: {
     fontSize: 20,
@@ -118,6 +136,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     color: "white",
     fontWeight: "normal",
-    alignSelf: "center", 
+    alignSelf: "center",
   },
 });
