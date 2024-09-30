@@ -8,8 +8,8 @@ import InputBox from "../src/components/InputBox";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
-import { useRegisterCarMutation } from "./../src/services/placeApi";
-import BackProfileHeader from "../src/components/NavBar"; // Import the BackProfileHeader component
+import { useRegisterCarMutation } from './../src/services/placeApi';
+import Navbar from "./../src/components/NavBar";
 
 type NavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -28,13 +28,6 @@ export default function RegisterCar() {
     setLocation(locationAddress);
   }, [locationAddress]);
 
-  const handleBackPress = () => {
-    navigation.goBack(); // Navigate back to the previous page
-  };
-
-  const handleProfilePress = () => {
-    navigation.navigate("Profile"); // Navigate to the profile page
-  };
 
   const handleButton = async () => {
     if (!plate.trim()) {
@@ -62,14 +55,18 @@ export default function RegisterCar() {
     }
   };
 
-  return (
-    <Container>
-      {/* Back and Profile header */}
-      <BackProfileHeader
-        onBackPress={handleBackPress}
-        onProfilePress={handleProfilePress}
-      />
+  const handleBackPress = () => {
+    navigation.navigate("UserHome");
 
+  };
+
+  const handleProfilePress = () => {
+    navigation.navigate("Profile");
+  };
+
+  return (
+    <Container> 
+      <Navbar onBackPress={handleBackPress} onProfilePress={handleProfilePress} />
       <Header content="Register your car" part={3} />
       <Container style={styles.inputContainer}>
         <InputBox

@@ -8,6 +8,7 @@ import { useFetchIsUserPoliceMutation } from './../src/services/placeApi';
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
+import navbar from "./../src/components/NavBar";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Home">;
 
@@ -28,8 +29,8 @@ export default function HomeScreen() {
         navigation.navigate("VerifyCar");
       } 
       if (isSuccess === false && reservation === null) {
-        //navigation.navigate("UserHome");
-        navigation.navigate("OtpVerify");
+        navigation.navigate("UserHome");
+        //navigation.navigate("OtpVerify");
       } 
       if (isSuccess === false && reservation !== null) {
         navigation.navigate("UserParking");

@@ -6,7 +6,7 @@ import { Container, Text } from "../../assets/styles/globalStyles";
 const { width } = Dimensions.get("window");
 
 interface CarCircleProps {
-  plate: string; // Define the plate prop
+  plate: any; // Define the plate prop
 }
 
 export default function CarCircle({ plate }: CarCircleProps) {

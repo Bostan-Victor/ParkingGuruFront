@@ -12,41 +12,62 @@ import ClickableText from "../src/components/ClickableText"; // Importing the Cl
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App"; // Import the navigation types
-import { useGetUserProfileMutation } from "./../src/services/placeApi";
-
+import { useGetUserProfileMutation, useGenerateOTPMutation } from "./../src/services/placeApi";
 
 const { width, height } = Dimensions.get("window"); // Get screen width and height
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "OtpVerify">;
 
 const VerifyPage: React.FC = () => {
   const [otp, setOtp] = useState("");
-  const [phone, setPhone] = useState("+373 79 001 200"); // State to manage OTP input
+  const [phone, setPhone] = useState(""); // State to manage OTP input
   const navigation = useNavigation<NavigationProp>();
+
+  // Hooks for fetching user profile and generating OTP
   const [getUserProfile, { data, error, isLoading }] = useGetUserProfileMutation();
+  const [generateOTP, { data: otpData, error: otpError, isLoading: otpLoading }] = useGenerateOTPMutation();
 
-
-  const handleSignInNavigation = () => {
-    navigation.navigate("UserHome");
-  };
-
-  // Handler for OTP resend
-  const handleResendOTP = () => {
-    console.log("Resend OTP clicked");
-    // Logic for resending OTP can go here
-  };
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const response = await getUserProfile({});
-        console.log(response);
-        setPhone(response.data?.data.getUserProfile.phoneNumber);
-      } catch (err) {
-        console.error('Error fetching user profile:', err); 
+  // Function to fetch user profile
+  const fetchUserProfile = async () => {
+    try {
+      const response = await getUserProfile({});
+      const userPhone = response.data?.data.getUserProfile.phoneNumber;
+      if (userPhone) {
+        setPhone(userPhone);
+        console.log("User phone number:", userPhone);
       }
-    };
+    } catch (err) {
+      console.error("Error fetching user profile:", err);
+    }
+  };
 
-    fetchUserProfile();
-  }, [getUserProfile]);
+  // Function to generate OTP after phone is set
+  const handleGenerateOTP = async (userPhone: string) => {
+    try {
+      const responseOTP = await generateOTP(userPhone);
+      console.log("OTP response:", responseOTP);
+    } catch (err) {
+      console.error("Error generating OTP:", err);
+    }
+  };
+
+  useEffect(() => {
+    const init = async () => {
+      await fetchUserProfile(); // Fetch user profile first
+    };
+    init();
+  }, []);
+
+  // Generate OTP once phone number is set
+  useEffect(() => {
+    if (phone) {
+      handleGenerateOTP(phone); // Call generateOTP only after phone number is set
+    }
+  }, [phone]);
+
+  const handleResendOTP = async () => {
+    console.log("Resend OTP clicked");
+    await handleGenerateOTP(phone); // Resend OTP using the existing phone number
+  };
 
   return (
     <Container style={styles.container}>
@@ -90,7 +111,7 @@ const VerifyPage: React.FC = () => {
       </View>
 
       {/* Yellow Submit Button - Outside the gray box */}
-      <TouchableOpacity style={styles.signUpButton} onPress={handleSignInNavigation}>
+      <TouchableOpacity style={styles.signUpButton} onPress={handleResendOTP}>
         <Text style={styles.signUpButtonText}>{"Verify"}</Text>
       </TouchableOpacity>
     </Container>

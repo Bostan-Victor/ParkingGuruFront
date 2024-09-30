@@ -7,10 +7,8 @@ import { SwipeButton } from "@arelstone/react-native-swipe-button";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
-import {
-  useGetReservationMutation,
-  useEndReservationMutation,
-} from "./../src/services/placeApi";
+import { useGetReservationMutation, useEndReservationMutation } from './../src/services/placeApi';
+// import Navbar from "./../src/components/NavBar"; // Commenting out Navbar import
 
 const { width, height } = Dimensions.get("window");
 type NavigationProp = NativeStackNavigationProp<
@@ -74,8 +72,17 @@ export default function UserParking() {
     handleReservation();
   }, []);
 
+  const handleBackPress = () => {
+    navigation.navigate("UserHome");
+  };
+
+  const handleProfilePress = () => {
+    navigation.navigate("Profile");
+  };
+
   return (
     <Container style={styles.container}>
+      {/* <Navbar onBackPress={handleBackPress} onProfilePress={handleProfilePress} /> */}
       <Container style={styles.circle}>
         <Circle plate={plate} />
       </Container>

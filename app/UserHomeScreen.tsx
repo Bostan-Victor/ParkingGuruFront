@@ -6,6 +6,7 @@ import { SwipeButton } from "@arelstone/react-native-swipe-button";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
+import Navbar from "./../src/components/NavBar";
 
 const { width, height } = Dimensions.get("window"); // Get the window dimensions here
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "UserHome">;
@@ -19,8 +20,14 @@ export default function UserHomeScreen() {
     navigation.navigate("RegisterCar");
   };
 
+  const handleProfilePress = () => {
+    navigation.navigate("Profile");
+  };
+
+
   return (
     <Container style={styles.container}>
+      <Navbar onProfilePress={handleProfilePress} />
       <Container style={styles.upperPart}>
         <Image
           source={require("./../assets/car-bg.png")}
